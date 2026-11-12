@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Panel de monitorización{% endblock %} · NetPanel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%2316a34a'/></svg>">
+</head>
+<body>
+  <header class="barra">
+    <a class="marca" href="{{ url_for('web.inicio') }}"><span class="punto up"></span> NetPanel</a>
+    <nav>
+      <a href="{{ url_for('web.inicio') }}">Equipos</a>
+      <a href="{{ url_for('web.incidencias') }}">Incidencias</a>
+      {% if es_admin %}
+        <a href="{{ url_for('web.nuevo') }}">+ Añadir</a>
+        <form method="post" action="{{ url_for('web.logout') }}" class="en-linea">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="enlace">Salir</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('web.login') }}">Entrar</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  {% if config.MODO_DEMO %}
+    <div class="aviso-global demo">MODO DEMO: los resultados son simulados, no se está comprobando la red real.</div>
+  {% endif %}
+  {% if es_admin and config.PASSWORD_POR_DEFECTO %}
+    <div class="aviso-global peligro">Estás usando la contraseña por defecto «admin». Cámbiala en el fichero .env (MONITOR_ADMIN_PASSWORD).</div>
+  {% endif %}
+
+  <main>
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% for categoria, mensaje in mensajes %}
+        <div class="mensaje {{ categoria }}">{{ mensaje }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block contenido %}{% endblock %}
+  </main>
+
+  <footer>NetPanel · Proyecto Intermodular · Python + Flask + SQLite</footer>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

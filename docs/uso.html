@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usar NetPanel</title>
+<meta name="description" content="Cómo instalar y usar NetPanel en un laboratorio, en casa y en una empresa.">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%2316a34a'/></svg>">
+</head>
+<body>
+<header class="cab"><div class="cab-dentro">
+  <a class="logo" href="index.html"><i></i> NetPanel</a>
+  <nav>
+    <a href="index.html">Proyecto</a>
+    <a class="activa" href="uso.html">Usar la app</a>
+    <a href="codigo.html">El código</a>
+    <a href="tfg.html">Guía del proyecto</a>
+    <a href="defensa.html">Defensa</a>
+    <a href="https://github.com/melvinfranco99/panel-monitorizacion-equipos">GitHub</a>
+    <button class="tema" aria-label="Cambiar tema">◐</button>
+  </nav>
+</div></header>
+
+<main class="contenido con-indice">
+  <aside class="indice">
+    <a href="#instalar">1. Instalar</a>
+    <a href="#primer-uso">2. Primer uso</a>
+    <a href="#entornos">3. Entornos</a>
+    <a href="#configurar">4. Configuración</a>
+    <a href="#telegram">5. Avisos Telegram</a>
+    <a href="#problemas">6. Problemas típicos</a>
+    <a href="#etica">7. Uso responsable</a>
+  </aside>
+  <div>
+  <p class="eyebrow">Manual de uso</p>
+  <h1>Instalar y usar NetPanel</h1>
+  <p class="lead">Desde probarlo en tu portátil en cinco minutos hasta dejarlo funcionando en un servidor de empresa con HTTPS.</p>
+
+  <h2 id="instalar">1. Instalación básica</h2>
+  <p>Necesitas <strong>Python 3.10 o superior</strong> y <strong>Git</strong>.</p>
+  <div class="pestanas" role="tablist">
+    <button role="tab" aria-selected="true" data-panel="i-linux">Linux / macOS</button>
+    <button role="tab" aria-selected="false" data-panel="i-win">Windows</button>
+  </div>
+  <div class="panel-pestana" id="i-linux">
+<pre>git clone https://github.com/melvinfranco99/panel-monitorizacion-equipos.git
+cd panel-monitorizacion-equipos
+python3 -m venv .venv              # entorno virtual: las librerías quedan dentro del proyecto
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env               # y edita la contraseña
+python run.py                      # abre http://localhost:5000</pre>
+  </div>
+  <div class="panel-pestana" id="i-win" hidden>
+<pre>git clone https://github.com/melvinfranco99/panel-monitorizacion-equipos.git
+cd panel-monitorizacion-equipos
+py -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+python run.py</pre>
+  <p>La primera vez Windows preguntará si permites a Python usar la red: acepta en <em>redes privadas</em>.</p>
+  </div>
+
+  <h2 id="primer-uso">2. Primer uso</h2>
+  <ol class="pasos">
+    <li>Abre <code>http://localhost:5000</code>. Al principio no hay equipos.</li>
+    <li>Pulsa <strong>Entrar</strong> e inicia sesión con el usuario y contraseña del fichero <code>.env</code> (por defecto <code>admin</code> / <code>admin</code>, y el panel te avisará en rojo de que la cambies).</li>
+    <li>Pulsa <strong>+ Añadir</strong>: nombre, IP, tipo y, si quieres, un puerto TCP.</li>
+    <li>O importa muchos de golpe desde un CSV:
+<pre>python herramientas.py importar ejemplos/equipos_casa.csv</pre></li>
+    <li>Para comprobar desde la terminal sin abrir la web:
+<pre>python herramientas.py comprobar</pre></li>
+  </ol>
+  <p>Formato del CSV (la primera línea son los nombres de columna):</p>
+<pre>nombre,ip,tipo,puerto,ubicacion,descripcion
+Router de casa,192.168.1.1,router,,Salón,
+Servidor web,192.168.1.11,servidor,80,Rack,Comprueba el puerto 80</pre>
+  <p>Tipos válidos: <code>router</code>, <code>switch</code>, <code>servidor</code>, <code>ordenador</code>, <code>impresora</code>, <code>otro</code>.</p>
+
+  <h2 id="entornos">3. Tres entornos de uso</h2>
+  <div class="pestanas" role="tablist">
+    <button role="tab" aria-selected="true" data-panel="e-lab">🧪 Laboratorio controlado</button>
+    <button role="tab" aria-selected="false" data-panel="e-casa">🏠 En casa</button>
+    <button role="tab" aria-selected="false" data-panel="e-emp">🏢 En una empresa</button>
+  </div>
+
+  <section class="panel-pestana" id="e-lab">
+    <p>Un entorno controlado es una red de pruebas donde <strong>tú decides qué falla y cuándo</strong>. Sirve para demostrar que la aplicación funciona sin tocar una red real. Tienes tres opciones, de más fácil a más realista:</p>
+
+    <h3>Opción A · Modo demo (sin red)</h3>
+    <p>Los resultados se simulan. Ideal para la presentación si en el aula no hay red o bloquea el ping.</p>
+<pre># Linux / macOS
+MONITOR_MODO_DEMO=1 python herramientas.py demo     # 12 equipos de ejemplo + 7 días de historial
+MONITOR_MODO_DEMO=1 python run.py
+
+# Windows (PowerShell)
+$env:MONITOR_MODO_DEMO=1; python herramientas.py demo; python run.py</pre>
+    <p>Sale una franja amarilla avisando de que es una simulación: sé transparente con el tribunal.</p>
+
+    <h3>Opción B · Red Docker (recomendada para demostrar)</h3>
+    <p>La carpeta <code>lab/</code> crea una red privada <code>172.30.0.0/24</code> con un «router», un servidor web nginx, un servidor de ficheros, dos PCs y una impresora, todos como contenedores, y el panel vigilándolos.</p>
+<pre>cd lab
+docker compose up -d --build          # abre http://localhost:5000  (admin / laboratorio)
+
+docker compose stop pc-contabilidad   # «desenchufar» un PC: en ~20 s sale CAÍDO
+docker compose start pc-contabilidad  # vuelve a RESPONDE y queda registrado en Incidencias
+docker compose stop servidor-web      # el servidor web (comprobado por TCP 80) cae
+
+docker compose down -v                # borrarlo todo al acabar</pre>
+    <div class="caja aviso"><p>Si <code>docker compose</code> no existe, instala el plugin: en Arch <code>sudo pacman -S docker-compose</code>; en Debian/Ubuntu <code>sudo apt install docker-compose-plugin</code>; en Windows viene con Docker Desktop.</p></div>
+    <p>Grabar este experimento (apagar, ver la caída, encender, ver la recuperación) con capturas o vídeo es una <strong>evidencia perfecta para la memoria y la defensa</strong>.</p>
+
+    <h3>Opción C · Máquinas virtuales</h3>
+    <p>Con VirtualBox: crea 2 o 3 VMs (un Debian, un Windows, un pfSense como router) en una «Red interna» o «Solo anfitrión», dales IP fija y añádelas al panel. Apaga una VM o activa su cortafuegos para ver la diferencia entre ping y TCP. Es lo más parecido a una red real y permite enseñar el caso de Windows bloqueando ICMP.</p>
+  </section>
+
+  <section class="panel-pestana" id="e-casa" hidden>
+    <ol class="pasos">
+      <li><strong>Averigua tu red.</strong> En Linux <code>ip route</code> (la IP tras <code>default via</code> es tu router); en Windows <code>ipconfig</code> («Puerta de enlace predeterminada»).</li>
+      <li><strong>Inventaria tus equipos.</strong> Entra en la web del router (normalmente esa IP) → lista de clientes DHCP. Ahí verás IP y nombre de cada dispositivo.</li>
+      <li><strong>Fija las IPs.</strong> En el router, crea <em>reservas DHCP</em> para los equipos que quieras vigilar: así su IP no cambia. Si no, mañana el NAS puede tener otra IP y saldrá «caído» sin estarlo.</li>
+      <li><strong>Carga los equipos</strong> copiando <code>ejemplos/equipos_casa.csv</code> y cambiando las IPs. Incluye <code>8.8.8.8</code> para saber si «se ha caído Internet» o solo tu red.</li>
+      <li><strong>Déjalo encendido.</strong> En un equipo que siempre esté encendido: una Raspberry Pi es ideal (consume ~3 W). Instálalo como servicio:
+<pre>sudo bash deploy/instalar_linux.sh</pre>
+      El servicio escucha solo en <code>127.0.0.1</code>; para verlo desde el móvil en casa cambia en <code>/etc/systemd/system/netpanel.service</code> <code>-b 127.0.0.1:5000</code> por <code>-b 0.0.0.0:5000</code> y entra a <code>http://IP-de-la-raspberry:5000</code>.</li>
+      <li><strong>Avisos al móvil</strong> con Telegram (ver sección 5).</li>
+    </ol>
+    <div class="caja peligro"><p><strong>No abras el puerto 5000 en el router hacia Internet.</strong> Si quieres verlo desde fuera de casa, usa una VPN (WireGuard, Tailscale) en lugar de exponer el panel.</p></div>
+  </section>
+
+  <section class="panel-pestana" id="e-emp" hidden>
+    <p>En una empresa cambian tres cosas: <strong>permisos</strong>, <strong>seguridad</strong> y <strong>fiabilidad</strong>.</p>
+    <h3>Antes de instalar</h3>
+    <ul>
+      <li><strong>Autorización por escrito</strong> del responsable de sistemas. Vigilar equipos ajenos sin permiso puede ser una falta o algo peor.</li>
+      <li>Pedir el <strong>inventario</strong> (o la hoja de direccionamiento IP) y decidir qué es crítico: router, cortafuegos, servidores, controlador de dominio, NAS, impresoras.</li>
+      <li>Reglas de <strong>cortafuegos</strong>: permitir ICMP echo y los puertos TCP necesarios <em>solo desde la IP del servidor de monitorización</em>. En Windows: regla de entrada «Archivo e impresora compartidos (petición de eco ICMPv4)», que se puede desplegar por GPO a todos los equipos.</li>
+      <li>Si hay VLANs, colocar el servidor en la <strong>VLAN de administración</strong> con rutas hacia las demás.</li>
+    </ul>
+    <h3>Instalación de producción</h3>
+    <ol class="pasos">
+      <li>Una VM Debian/Ubuntu Server pequeña (1 vCPU, 1 GB RAM) en el hipervisor de la empresa (Proxmox, VMware, Hyper-V).</li>
+      <li><code>sudo bash deploy/instalar_linux.sh</code>: crea un usuario sin privilegios <code>netpanel</code>, el entorno virtual, genera clave secreta y contraseña aleatorias y registra el servicio <code>systemd</code>.</li>
+      <li>Instala <strong>nginx</strong> como proxy inverso con <strong>HTTPS</strong>: plantilla en <code>deploy/nginx-netpanel.conf</code>. Limita con <code>allow</code>/<code>deny</code> qué red puede ver el panel.</li>
+      <li>En <code>/opt/netpanel/.env</code> pon <code>MONITOR_LOGIN_LECTURA=1</code> para que haga falta usuario incluso para mirar.</li>
+      <li>Crea un nombre DNS interno (p. ej. <code>netpanel.empresa.local</code>) en el servidor DNS / controlador de dominio.</li>
+      <li>Importa el inventario con <code>herramientas.py importar inventario.csv</code>.</li>
+      <li><strong>Copia de seguridad</strong> del fichero <code>instance/monitor.db</code> (basta con un <code>cron</code> diario con <code>sqlite3 monitor.db ".backup copia.db"</code>).</li>
+      <li>¿Quién vigila al vigilante? Conviene comprobar desde fuera que el panel está vivo (otro NetPanel o un servicio externo).</li>
+    </ol>
+    <p>Arquitectura recomendada:</p>
+<pre>[Usuarios IT] --HTTPS--> nginx (443) --> gunicorn 127.0.0.1:5000 --> NetPanel
+                                                          |
+                                     ICMP/TCP --> routers, servidores, PCs (todas las VLAN)</pre>
+    <div class="caja aviso"><p><strong>Límites honestos:</strong> a partir de varios cientos de equipos, o si se necesitan métricas de CPU, disco o tráfico (SNMP, agentes), lo profesional es Zabbix, LibreNMS o PRTG. NetPanel cubre la pregunta «¿está vivo?» en redes pequeñas y medianas.</p></div>
+  </section>
+
+  <h2 id="configurar">4. Configuración (.env)</h2>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Variable</th><th>Por defecto</th><th>Para qué sirve</th></tr></thead>
+    <tbody>
+      <tr><td><code>SECRET_KEY</code></td><td>(de desarrollo)</td><td>Firma la cookie de sesión. Cámbiala siempre.</td></tr>
+      <tr><td><code>MONITOR_ADMIN_USUARIO</code> / <code>_PASSWORD</code></td><td>admin / admin</td><td>Credenciales del administrador.</td></tr>
+      <tr><td><code>MONITOR_INTERVALO</code></td><td>30</td><td>Segundos entre comprobaciones.</td></tr>
+      <tr><td><code>MONITOR_TIMEOUT</code></td><td>1</td><td>Segundos de espera máxima de cada respuesta.</td></tr>
+      <tr><td><code>MONITOR_FALLOS_PARA_CAIDO</code></td><td>2</td><td>Fallos seguidos para marcar un equipo como caído.</td></tr>
+      <tr><td><code>MONITOR_RETENCION_DIAS</code></td><td>30</td><td>Días de historial que se guardan.</td></tr>
+      <tr><td><code>MONITOR_DB</code></td><td>instance/monitor.db</td><td>Ruta de la base de datos.</td></tr>
+      <tr><td><code>MONITOR_MODO_DEMO</code></td><td>0</td><td>1 = resultados simulados.</td></tr>
+      <tr><td><code>MONITOR_LOGIN_LECTURA</code></td><td>0</td><td>1 = pedir usuario también para ver el panel.</td></tr>
+      <tr><td><code>MONITOR_TELEGRAM_TOKEN</code> / <code>_CHAT_ID</code></td><td>(vacío)</td><td>Avisos por Telegram.</td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Cálculo rápido del tamaño del historial:</strong> 50 equipos × 2 comprobaciones/min × 60 × 24 × 30 días ≈ 4,3 millones de filas ≈ 200–300 MB. Si es mucho, sube el intervalo a 60 s o baja la retención.</p>
+
+  <h2 id="telegram">5. Avisos por Telegram</h2>
+  <ol class="pasos">
+    <li>En Telegram, habla con <code>@BotFather</code> → <code>/newbot</code>. Te da un <strong>token</strong>.</li>
+    <li>Escribe cualquier cosa a tu bot y abre <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code>: el número en <code>"chat":{"id":…}</code> es tu <strong>chat_id</strong>.</li>
+    <li>Ponlos en <code>.env</code> (<code>MONITOR_TELEGRAM_TOKEN</code> y <code>MONITOR_TELEGRAM_CHAT_ID</code>) y reinicia. Recibirás «🔴 CAÍDO: …» y «🟢 RECUPERADO: …».</li>
+  </ol>
+
+  <h2 id="problemas">6. Problemas típicos</h2>
+  <details><summary>Un PC con Windows sale siempre caído, pero funciona</summary><div><p>El cortafuegos de Windows bloquea el ping por defecto. Opciones: activar la regla «petición de eco ICMPv4» o, mejor, indicar un puerto TCP que tenga abierto (3389 si tiene escritorio remoto, 445 si comparte carpetas).</p></div></details>
+  <details><summary>En Docker o Linux el ping da «Operation not permitted»</summary><div><p>Enviar ICMP necesita un socket especial. En Linux moderno se permite a usuarios normales mediante <code>net.ipv4.ping_group_range</code>; en Docker el contenedor necesita la capacidad <code>NET_RAW</code> (activada por defecto). Si la quitaste, usa comprobaciones TCP.</p></div></details>
+  <details><summary>Todo sale caído de golpe</summary><div><p>Lo más probable es que el problema sea del propio servidor del panel (cable, Wi-Fi, gateway). Por eso conviene vigilar también el router y <code>8.8.8.8</code>: si todo cae a la vez, el problema está cerca del monitor.</p></div></details>
+  <details><summary>Un equipo aparece y desaparece (flapping)</summary><div><p>Wi-Fi débil o red saturada. Sube <code>MONITOR_FALLOS_PARA_CAIDO</code> a 3 o <code>MONITOR_TIMEOUT</code> a 2.</p></div></details>
+  <details><summary>«Token CSRF inválido»</summary><div><p>La sesión caducó o cambiaste la <code>SECRET_KEY</code>. Recarga la página e inténtalo de nuevo.</p></div></details>
+  <details><summary>Con gunicorn las comprobaciones salen duplicadas</summary><div><p>Estás usando varios procesos (<code>-w 4</code>). Cada proceso arranca su propio monitor. Usa <code>-w 1 --threads 8</code>.</p></div></details>
+
+  <h2 id="etica">7. Uso responsable y legal</h2>
+  <div class="caja peligro">
+    <p>Monitoriza <strong>solo redes tuyas o en las que tengas autorización expresa</strong>. Enviar paquetes a equipos ajenos de forma sistemática puede considerarse un escaneo no autorizado. En empresa, el panel almacena IPs y nombres de equipos asociados a personas («PC de Dirección»): son datos que entran en el ámbito del RGPD/LOPDGDD, así que el acceso debe estar limitado al personal de sistemas.</p>
+  </div>
+  </div>
+</main>
+<footer class="pie">NetPanel · Proyecto Intermodular</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

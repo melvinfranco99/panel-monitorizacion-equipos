@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía del proyecto</title>
+<meta name="description" content="Plan de trabajo, qué aprender y cómo redactar la memoria del Proyecto Intermodular NetPanel.">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%2316a34a'/></svg>">
+</head>
+<body>
+<header class="cab"><div class="cab-dentro">
+  <a class="logo" href="index.html"><i></i> NetPanel</a>
+  <nav>
+    <a href="index.html">Proyecto</a>
+    <a href="uso.html">Usar la app</a>
+    <a href="codigo.html">El código</a>
+    <a class="activa" href="tfg.html">Guía del proyecto</a>
+    <a href="defensa.html">Defensa</a>
+    <a href="https://github.com/melvinfranco99/panel-monitorizacion-equipos">GitHub</a>
+    <button class="tema" aria-label="Cambiar tema">◐</button>
+  </nav>
+</div></header>
+
+<main class="contenido con-indice">
+  <aside class="indice">
+    <a href="#ya">Lo primero (antes del 20/11)</a>
+    <a href="#evaluacion">Cómo te evalúan</a>
+    <a href="#plan">Plan de trabajo</a>
+    <a href="#aprender">Qué debes aprender</a>
+    <a href="#personal">Tu toque personal</a>
+    <a href="#memoria">La memoria</a>
+    <a href="#evidencias">Evidencias</a>
+    <a href="#ia">Uso de la IA</a>
+    <a href="#checklist">Checklist final</a>
+  </aside>
+  <div>
+  <p class="eyebrow">Proyecto Intermodular · curso 26-27</p>
+  <h1>Guía para hacer bien el proyecto</h1>
+  <p class="lead">Basada en la guía oficial del módulo (CCC). La aplicación ya funciona: lo que queda es que <strong>la entiendas, la hagas tuya, la documentes y la defiendas</strong>.</p>
+
+  <h2 id="ya">1. Lo primero: antes del 20 de noviembre</h2>
+  <div class="caja peligro">
+    <p>La guía dice: <em>«El alumno deberá indicar a su tutor qué tipo de proyecto va a realizar antes del 20 de noviembre.»</em> Escríbele ya por la mensajería del campus.</p>
+  </div>
+  <p>Este proyecto encaja en la modalidad <strong>a) Proyecto de investigación experimental</strong> (desarrollo de procesos / solución técnica), que exige <strong>memoria de 15 a 20 páginas</strong> (sin anexos) y <strong>defensa presencial</strong> (20 min + 10 min de preguntas). Mensaje de ejemplo:</p>
+<pre>Hola [nombre del tutor/a]:
+
+Le escribo para comunicarle mi propuesta de Proyecto Intermodular.
+Modalidad: a) Proyecto de investigación experimental.
+Título provisional: «NetPanel: panel web de monitorización de la
+disponibilidad de equipos de red».
+
+Se trata de diseñar y desarrollar una aplicación web en Python (Flask)
+con base de datos SQLite que comprueba periódicamente, mediante ICMP y
+TCP, si los ordenadores, servidores y routers de una red responden,
+muestra su IP y latencia y guarda el historial para calcular su
+disponibilidad. Incluye un laboratorio de pruebas con Docker y una
+propuesta de implantación para una pyme.
+
+Integra contenidos de redes, sistemas, programación, bases de datos y
+seguridad. ¿Le parece adecuada? Quedo a la espera de sus indicaciones.
+
+Un saludo,
+[Tu nombre]</pre>
+
+  <h2 id="evaluacion">2. Cómo te van a evaluar</h2>
+  <div class="rejilla">
+    <div class="caja destacada"><h3>40 % · Idea, contexto y desarrollo</h3><p>Que el problema sea real, la solución esté justificada y funcione. Aquí cuenta la app, el laboratorio y la comparativa con otras herramientas.</p></div>
+    <div class="caja destacada"><h3>25 % · Seguimiento del tutor</h3><p>Entregas periódicas y asistir a las tutorías colectivas. <strong>Un cuarto de la nota es constancia</strong>: manda avances aunque sean pequeños.</p></div>
+    <div class="caja destacada"><h3>35 % · Memoria y defensa</h3><p>Hay que aprobar (≥ 5) la memoria para poder defender, y aprobar las dos partes.</p></div>
+  </div>
+  <p>En la memoria se valora: estructura, presentación, ortografía, información visual (figuras con leyenda) y adecuación (justificación, objetivos, conclusiones). En la defensa: expresión verbal y no verbal, contenido, ajuste a las pautas y <strong>respuestas al tribunal</strong>.</p>
+
+  <h2 id="plan">3. Plan de trabajo propuesto</h2>
+  <p>Ajusta las fechas a las entregas que marque tu tutor. Lo importante es el orden.</p>
+  <div class="cronograma">
+    <div class="fila"><span class="fecha">Esta semana</span><div>Comunicar modalidad y tema al tutor. Clonar el repositorio, instalarlo y hacerlo funcionar en tu equipo. Probar el modo demo.</div></div>
+    <div class="fila"><span class="fecha">Semanas 2–4</span><div><strong>Aprender lo básico</strong> (sección 4): redes, Python, Flask, SQL. Leer <a href="codigo.html">el código explicado</a> con el código abierto al lado. Ejecutar los tests.</div></div>
+    <div class="fila"><span class="fecha">Semanas 5–6</span><div>Montar el <strong>laboratorio</strong> (Docker o VirtualBox) y en casa con tus equipos reales. Hacer capturas y grabar un vídeo de una caída y recuperación.</div></div>
+    <div class="fila"><span class="fecha">Semanas 7–9</span><div><strong>Tu aportación propia</strong> (sección 5): implementar al menos una mejora tú. Llevar un diario de trabajo con problemas y soluciones.</div></div>
+    <div class="fila"><span class="fecha">Semanas 10–12</span><div>Redactar la <strong>memoria</strong> en la plantilla oficial partiendo del <a href="https://github.com/melvinfranco99/panel-monitorizacion-equipos/blob/main/memoria/BORRADOR_MEMORIA.md">borrador</a>. Pedir revisión al tutor.</div></div>
+    <div class="fila"><span class="fecha">Tras aprobar la memoria</span><div>Preparar la <a href="defensa.html">presentación</a>, ensayar cronometrado al menos 3 veces y repasar las preguntas.</div></div>
+  </div>
+
+  <h2 id="aprender">4. Qué debes aprender (y hasta dónde)</h2>
+  <p>No necesitas ser experto en todo. Necesitas poder explicar <strong>por qué</strong> está hecho así. Marca lo que ya dominas (se guarda en este navegador):</p>
+
+  <h3>Redes (lo más importante: es lo que se monitoriza)</h3>
+  <ul class="check-lista">
+    <li><input type="checkbox"> Dirección IP, máscara, puerta de enlace, red/subred. Qué es <code>192.168.1.0/24</code> y cuántos equipos caben (254).</li>
+    <li><input type="checkbox"> IPs privadas (RFC 1918: 10/8, 172.16/12, 192.168/16) y NAT.</li>
+    <li><input type="checkbox"> Modelo OSI y TCP/IP: en qué capa está ICMP (3) y TCP (4).</li>
+    <li><input type="checkbox"> ICMP: echo request (tipo 8) y echo reply (tipo 0). Qué es el TTL.</li>
+    <li><input type="checkbox"> TCP vs UDP; saludo de tres pasos; puertos conocidos (22, 53, 80, 443, 445, 3389).</li>
+    <li><input type="checkbox"> DNS (nombre → IP) y DHCP (reparto de IPs, reservas).</li>
+    <li><input type="checkbox"> Latencia (RTT), pérdida de paquetes, jitter.</li>
+    <li><input type="checkbox"> Cortafuegos: por qué Windows bloquea el ping. VLANs (idea general).</li>
+    <li><input type="checkbox"> Comandos: <code>ping</code>, <code>ip a</code>/<code>ipconfig</code>, <code>ip route</code>, <code>traceroute</code>/<code>tracert</code>, <code>ss</code>/<code>netstat</code>, <code>nslookup</code>.</li>
+  </ul>
+
+  <h3>Python</h3>
+  <ul class="check-lista">
+    <li><input type="checkbox"> Variables, listas, diccionarios, funciones, bucles, <code>if</code>.</li>
+    <li><input type="checkbox"> Módulos e <code>import</code>; paquetes (carpeta con <code>__init__.py</code>).</li>
+    <li><input type="checkbox"> Excepciones (<code>try/except</code>) y <code>with</code>.</li>
+    <li><input type="checkbox"> Clases (la clase <code>Monitor</code>).</li>
+    <li><input type="checkbox"> <code>subprocess</code>, <code>socket</code>, <code>re</code> (expresiones regulares) a nivel de entender el uso.</li>
+    <li><input type="checkbox"> Hilos: qué es un hilo, por qué sirven para esperar a la red, qué es el GIL (idea).</li>
+    <li><input type="checkbox"> Entorno virtual (<code>venv</code>) y <code>pip</code>; qué es <code>requirements.txt</code>.</li>
+    <li><input type="checkbox"> Decoradores (qué hace <code>@login_requerido</code>).</li>
+  </ul>
+
+  <h3>Web y Flask</h3>
+  <ul class="check-lista">
+    <li><input type="checkbox"> Cliente-servidor, HTTP, métodos GET y POST, códigos 200/302/404/400/401.</li>
+    <li><input type="checkbox"> Rutas en Flask (<code>@web.route</code>), <code>render_template</code>, <code>request.form</code>, <code>redirect</code>, <code>jsonify</code>.</li>
+    <li><input type="checkbox"> Plantillas Jinja2: <code>{{ }}</code>, <code>{% for %}</code>, herencia con <code>extends</code>.</li>
+    <li><input type="checkbox"> Sesiones y cookies.</li>
+    <li><input type="checkbox"> JSON y API REST (idea). <code>fetch()</code> en JavaScript (AJAX).</li>
+    <li><input type="checkbox"> HTML semántico, CSS (grid, variables, media queries), diseño responsive.</li>
+    <li><input type="checkbox"> Diferencia entre servidor de desarrollo de Flask y gunicorn; qué hace nginx como proxy inverso.</li>
+  </ul>
+
+  <h3>Bases de datos</h3>
+  <ul class="check-lista">
+    <li><input type="checkbox"> Tabla, fila, columna, clave primaria, clave ajena, relación 1:N.</li>
+    <li><input type="checkbox"> <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>WHERE</code>, <code>JOIN</code>, <code>GROUP BY</code>, <code>AVG</code>.</li>
+    <li><input type="checkbox"> Qué es un índice y para qué sirve.</li>
+    <li><input type="checkbox"> Por qué SQLite y cuándo cambiarías a PostgreSQL/MariaDB.</li>
+    <li><input type="checkbox"> Saber dibujar el diagrama entidad-relación de las 3 tablas.</li>
+  </ul>
+
+  <h3>Seguridad</h3>
+  <ul class="check-lista">
+    <li><input type="checkbox"> Hash de contraseñas vs cifrado. Qué es la sal.</li>
+    <li><input type="checkbox"> Inyección SQL y consultas parametrizadas.</li>
+    <li><input type="checkbox"> Inyección de comandos y por qué validar la IP.</li>
+    <li><input type="checkbox"> XSS y escapado de HTML. CSRF y su token.</li>
+    <li><input type="checkbox"> HTTPS, principio de mínimo privilegio (usuario <code>netpanel</code> sin shell), no exponer a Internet.</li>
+    <li><input type="checkbox"> RGPD a nivel básico: el inventario de equipos puede ser dato personal.</li>
+  </ul>
+
+  <h3>Sistemas y herramientas</h3>
+  <ul class="check-lista">
+    <li><input type="checkbox"> Git: <code>clone</code>, <code>add</code>, <code>commit</code>, <code>push</code>; qué es GitHub y GitHub Pages.</li>
+    <li><input type="checkbox"> Linux: <code>systemctl</code>, <code>journalctl</code>, permisos, usuarios.</li>
+    <li><input type="checkbox"> Docker: imagen, contenedor, red, <code>docker compose</code>.</li>
+    <li><input type="checkbox"> Conocer de oídas Zabbix, Nagios, PRTG, Uptime Kuma, SNMP.</li>
+  </ul>
+
+  <h3>Recursos recomendados (gratuitos)</h3>
+  <ul>
+    <li>Documentación oficial de Flask, tutorial «Flaskr»: <a href="https://flask.palletsprojects.com/">flask.palletsprojects.com</a></li>
+    <li>Python oficial (en español): <a href="https://docs.python.org/es/3/tutorial/">docs.python.org/es/3/tutorial</a></li>
+    <li>MDN Web Docs (HTML, CSS, JS, HTTP): <a href="https://developer.mozilla.org/es/">developer.mozilla.org/es</a></li>
+    <li>SQLite: <a href="https://www.sqlite.org/lang.html">sqlite.org/lang.html</a> · ejercicios SQL en <a href="https://sqlbolt.com/">sqlbolt.com</a></li>
+    <li>OWASP Top 10 (seguridad web): <a href="https://owasp.org/www-project-top-ten/">owasp.org</a></li>
+    <li>RFC 792 (ICMP) y RFC 1918 (direcciones privadas): <a href="https://www.rfc-editor.org/">rfc-editor.org</a></li>
+    <li>Cisco Networking Academy, curso gratuito «Networking Basics».</li>
+  </ul>
+
+  <h2 id="personal">5. Tu toque personal (muy recomendable)</h2>
+  <p>La guía valora «la originalidad, creatividad y el toque personal» y el tribunal quiere comprobar que el proyecto es tuyo. La mejor forma: <strong>implementa tú al menos una mejora</strong>, aunque sea con ayuda, y cuéntala en la memoria como aportación propia. Ideas ordenadas por dificultad:</p>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Mejora</th><th>Dificultad</th><th>Dónde se toca</th></tr></thead>
+    <tbody>
+      <tr><td>Exportar el historial de un equipo a CSV</td><td>Baja</td><td>Nueva ruta en <code>rutas.py</code></td></tr>
+      <tr><td>Avisos por correo electrónico (SMTP) además de Telegram</td><td>Baja</td><td><code>monitor.py</code> con <code>smtplib</code></td></tr>
+      <tr><td>Agrupar equipos por ubicación o departamento</td><td>Baja-media</td><td>Plantilla + filtro en <code>app.js</code></td></tr>
+      <tr><td>Ventanas de mantenimiento (no avisar durante X horas)</td><td>Media</td><td>Columna nueva en <code>equipos</code> + <code>monitor.py</code></td></tr>
+      <tr><td>Descubrimiento automático: barrer una subred /24 y proponer equipos</td><td>Media</td><td>Función nueva usando <code>ipaddress</code> + el pool de hilos</td></tr>
+      <tr><td>Mostrar la MAC y el fabricante (tabla ARP)</td><td>Media</td><td><code>ip neigh</code> / <code>arp -a</code></td></tr>
+      <tr><td>Mapa visual de la red (router → switch → equipos)</td><td>Media-alta</td><td>Campo «depende de» + SVG</td></tr>
+      <tr><td>Lectura SNMP (CPU, tráfico del router)</td><td>Alta</td><td>Librería <code>pysnmp</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="memoria">6. La memoria (15–20 páginas)</h2>
+  <div class="caja aviso"><p><strong>Formato obligatorio</strong> (guía del módulo): plantilla del campus · Calibri 11 o Times New Roman 12 · interlineado 1,5 · texto justificado · márgenes 2 cm (sup., inf., dcho.) y 3 cm (izq.) · número de página abajo a la derecha · <strong>toda figura y tabla con leyenda</strong> · entrega en PDF.</p></div>
+  <p>Tienes un <strong>borrador completo</strong> en <a href="https://github.com/melvinfranco99/panel-monitorizacion-equipos/blob/main/memoria/BORRADOR_MEMORIA.md"><code>memoria/BORRADOR_MEMORIA.md</code></a>. Úsalo como base, <strong>reescríbelo con tus palabras</strong> y añade tu experiencia real. Reparto orientativo de páginas:</p>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Apartado (obligatorio)</th><th>Págs.</th><th>Qué poner</th></tr></thead>
+    <tbody>
+      <tr><td>1. Portada</td><td>–</td><td>La de la plantilla: título, nombre, curso 26-27, tutor/a.</td></tr>
+      <tr><td>2. Resumen</td><td>½</td><td>Qué, para qué, cómo y resultado, en 150–200 palabras.</td></tr>
+      <tr><td>3. Índice</td><td>1</td><td>Automático desde Word/Docs (usa estilos de título).</td></tr>
+      <tr><td>4. Justificación</td><td>1–1½</td><td>Problema real: caídas que se descubren tarde, coste de parada, pymes sin herramientas. Motivación personal.</td></tr>
+      <tr><td>5. Introducción</td><td>3–4</td><td>Revisión de fuentes: qué es monitorizar, ICMP/TCP, disponibilidad y SLA, herramientas existentes (tabla comparativa). <strong>Con citas.</strong></td></tr>
+      <tr><td>6. Objetivos</td><td>½</td><td>1 general + 4–6 específicos, en infinitivo.</td></tr>
+      <tr><td>7. Desarrollo</td><td>7–9</td><td>Metodología y planificación, requisitos, arquitectura (diagrama), base de datos (diagrama E-R), funcionamiento, seguridad, pruebas (laboratorio + tests), despliegue en casa/empresa, presupuesto.</td></tr>
+      <tr><td>8. Conclusiones</td><td>1–1½</td><td>Objetivo por objetivo: ¿se cumplió? Dificultades, qué aprendiste, mejoras futuras.</td></tr>
+      <tr><td>9. Bibliografía</td><td>1</td><td>Formato APA 7. Mínimo 8–10 fuentes contrastadas.</td></tr>
+      <tr><td>10. Anexos</td><td>libre</td><td>Capturas, manual de instalación, salida de los tests, CSV de ejemplo, enlaces a GitHub y a esta web.</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Figuras que deberías incluir</h3>
+  <ul>
+    <li>Diagrama de arquitectura (puedes capturar el de <a href="index.html#arquitectura">la portada</a> o rehacerlo en draw.io).</li>
+    <li>Diagrama entidad-relación de las 3 tablas.</li>
+    <li>Diagrama de flujo del ciclo de comprobación.</li>
+    <li>Esquema de red del laboratorio (172.30.0.0/24).</li>
+    <li>Capturas: panel, ficha de equipo, incidencias, formulario, móvil, aviso de Telegram.</li>
+    <li>Secuencia «equipo apagado → caído → encendido → recuperado».</li>
+    <li>Diagrama de Gantt de la planificación.</li>
+  </ul>
+
+  <h2 id="evidencias">7. Evidencias que debes ir guardando</h2>
+  <ul class="check-lista">
+    <li><input type="checkbox"> Capturas de cada fase (instalación, primera ejecución, errores que te salieron y cómo los resolviste).</li>
+    <li><input type="checkbox"> Vídeo corto (1–2 min) del laboratorio: apagar un equipo y verlo caer. Te salva la defensa si falla la demo en directo.</li>
+    <li><input type="checkbox"> Captura de <code>pytest</code> con todo en verde.</li>
+    <li><input type="checkbox"> Historial de commits en GitHub (demuestra trabajo continuado).</li>
+    <li><input type="checkbox"> Panel funcionando en tu casa unos días: datos reales de disponibilidad de tu router o de Internet.</li>
+    <li><input type="checkbox"> Diario de trabajo: fecha, qué hiciste, qué problema, cómo lo resolviste. Sirve para la memoria y para el seguimiento del tutor.</li>
+  </ul>
+
+  <h2 id="ia">8. Sobre el uso de la IA</h2>
+  <div class="caja destacada">
+    <p>Usar IA como ayuda es legítimo si eres <strong>transparente</strong> y <strong>entiendes lo que entregas</strong>. Recomendaciones:</p>
+    <ul>
+      <li>Indícalo en la memoria (en metodología o herramientas): «Se ha utilizado un asistente de IA como apoyo para generar código base y documentación, que ha sido revisado, probado y adaptado por el autor».</li>
+      <li>Consulta con tu tutor si hay alguna norma del centro al respecto.</li>
+      <li>No entregues nada que no sepas explicar. El tribunal lo nota enseguida, y esta web está hecha precisamente para que puedas explicarlo todo.</li>
+      <li>Haz tú la mejora de la sección 5 y escribe la memoria con tus palabras: la guía advierte que el trabajo «no se limite a un plagio de información».</li>
+    </ul>
+  </div>
+
+  <h2 id="checklist">9. Checklist antes de entregar</h2>
+  <ul class="check-lista">
+    <li><input type="checkbox"> Modalidad comunicada al tutor antes del 20/11.</li>
+    <li><input type="checkbox"> La app funciona en mi equipo y sé arrancarla sin mirar.</li>
+    <li><input type="checkbox"> He leído y entiendo todos los ficheros de <code>panel/</code>.</li>
+    <li><input type="checkbox"> He hecho al menos una mejora yo mismo.</li>
+    <li><input type="checkbox"> Laboratorio probado, con capturas y vídeo.</li>
+    <li><input type="checkbox"> Memoria en la plantilla oficial, 15–20 páginas, estructura de 10 puntos.</li>
+    <li><input type="checkbox"> Todas las figuras y tablas tienen leyenda numerada.</li>
+    <li><input type="checkbox"> Ortografía revisada (pasar corrector y leer en voz alta).</li>
+    <li><input type="checkbox"> Bibliografía en APA, citada en el texto.</li>
+    <li><input type="checkbox"> Exportada a PDF y subida a la tarea del campus dentro de plazo.</li>
+    <li><input type="checkbox"> Presentación preparada y ensayada en menos de 20 minutos.</li>
+    <li><input type="checkbox"> DNI preparado para el día de la defensa.</li>
+  </ul>
+  </div>
+</main>
+<footer class="pie">NetPanel · Proyecto Intermodular</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

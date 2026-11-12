@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo %}Incidencias{% endblock %}
+{% block contenido %}
+<h1>Incidencias</h1>
+<p class="nota">Caídas y recuperaciones de todos los equipos (las 200 más recientes).</p>
+{% if eventos %}
+<table class="tabla">
+  <thead><tr><th>Fecha</th><th>Equipo</th><th>Dirección</th><th>Cambio</th></tr></thead>
+  <tbody>
+  {% for ev in eventos %}
+    <tr>
+      <td>{{ ev.fecha }}</td>
+      <td><a href="{{ url_for('web.detalle', equipo_id=ev.equipo_id) }}">{{ ev.nombre }}</a></td>
+      <td><code>{{ ev.ip }}</code></td>
+      <td>{% if ev.estado_nuevo == 'down' %}<span class="etiqueta-estado down">CAÍDO</span>{% else %}<span class="etiqueta-estado up">RECUPERADO</span>{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="vacio"><p>No hay incidencias. ¡Todo funciona!</p></div>{% endif %}
+{% endblock %}

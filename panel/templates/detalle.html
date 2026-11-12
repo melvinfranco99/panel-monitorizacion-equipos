@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block titulo %}{{ equipo.nombre }}{% endblock %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('web.inicio') }}">← Todos los equipos</a>
+<section class="cabecera-equipo">
+  <div>
+    <h1><span class="punto {{ equipo.estado }}"></span> {{ equipo.nombre }}</h1>
+    <p class="sub">
+      <code>{{ equipo.ip }}</code>{% if equipo.puerto %} · TCP {{ equipo.puerto }}{% else %} · ICMP (ping){% endif %}
+      · {{ equipo.tipo|capitalize }}{% if equipo.ubicacion %} · {{ equipo.ubicacion }}{% endif %}
+      {% if not equipo.activo %} · <strong>pausado</strong>{% endif %}
+    </p>
+    {% if equipo.descripcion %}<p>{{ equipo.descripcion }}</p>{% endif %}
+  </div>
+  {% if es_admin %}
+  <div class="acciones">
+    <a class="boton secundario" href="{{ url_for('web.editar', equipo_id=equipo.id) }}">Editar</a>
+    <form method="post" action="{{ url_for('web.borrar', equipo_id=equipo.id) }}" class="en-linea"
+          onsubmit="return confirm('¿Borrar el equipo y todo su historial?');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="boton peligro">Borrar</button>
+    </form>
+  </div>
+  {% endif %}
+</section>
+
+<section class="resumen">
+  <div class="tarjeta-dato"><span class="dato estado-{{ equipo.estado }}">{{ {'up':'Responde','down':'Caído'}.get(equipo.estado, 'Sin datos') }}</span><span class="etiqueta">Estado actual</span></div>
+  <div class="tarjeta-dato"><span class="dato">{{ '%.1f ms'|format(equipo.latencia_ms) if equipo.latencia_ms is not none else '–' }}</span><span class="etiqueta">Última latencia</span></div>
+  {% for etiqueta, valor in uptimes.items() %}
+  <div class="tarjeta-dato"><span class="dato">{{ '%.2f %%'|format(valor) if valor is not none else '–' }}</span><span class="etiqueta">Disponibilidad {{ etiqueta }}</span></div>
+  {% endfor %}
+</section>
+
+<section class="panel">
+  <div class="panel-cabecera">
+    <h2>Disponibilidad por tramos</h2>
+    <div class="filtros" id="rango">
+      <button class="filtro activo" data-horas="24">24 h</button>
+      <button class="filtro" data-horas="168">7 días</button>
+      <button class="filtro" data-horas="720">30 días</button>
+    </div>
+  </div>
+  <div class="barras" id="barras"></div>
+  <p class="nota">Cada barra es un tramo de tiempo. Verde = 100 % de respuestas, ámbar = alguna pérdida (≥ 75 %), rojo = caída o pérdidas graves, gris = sin datos.</p>
+</section>
+
+<section class="panel">
+  <h2>Latencia de las últimas comprobaciones</h2>
+  <div id="grafica" class="grafica"></div>
+  <p class="nota">Tiempo de ida y vuelta (RTT) en milisegundos. Las marcas rojas son comprobaciones sin respuesta.</p>
+</section>
+
+<section class="panel">
+  <h2>Historial de cambios de estado</h2>
+  {% if eventos %}
+  <table class="tabla">
+    <thead><tr><th>Fecha</th><th>Cambio</th></tr></thead>
+    <tbody>
+    {% for ev in eventos %}
+      <tr><td>{{ ev.fecha }}</td>
+          <td><span class="etiqueta-estado {{ ev.estado_anterior }}">{{ ev.estado_anterior }}</span> → <span class="etiqueta-estado {{ ev.estado_nuevo }}">{{ ev.estado_nuevo }}</span></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p class="nota">Sin cambios de estado registrados.</p>{% endif %}
+</section>
+{% endblock %}
+{% block scripts %}<script>Panel.iniciarDetalle({{ equipo.id }});</script>{% endblock %}

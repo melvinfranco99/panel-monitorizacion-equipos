@@ -1,0 +1,9 @@
+nombre,ip,tipo,puerto,ubicacion,descripcion
+Router (simulado),172.30.0.2,router,,Laboratorio,Contenedor Alpine
+Servidor web (nginx),172.30.0.20,servidor,80,Laboratorio,Comprobación TCP al puerto 80
+Servidor de ficheros,172.30.0.21,servidor,,Laboratorio,
+PC Recepción,172.30.0.50,ordenador,,Laboratorio,
+PC Contabilidad,172.30.0.51,ordenador,,Laboratorio,
+Impresora (simulada),172.30.0.100,impresora,,Laboratorio,
+Equipo inexistente,172.30.0.99,ordenador,,Laboratorio,Nunca responde: sirve para ver un CAÍDO
+Internet (DNS Google),8.8.8.8,servidor,,Internet,Salida a Internet desde el laboratorio

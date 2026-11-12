@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NetPanel · Panel de monitorización</title>
+<meta name="description" content="Panel web en Python + Flask que vigila ordenadores, servidores y routers de una red: si responden, su IP y su historial de disponibilidad.">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%2316a34a'/></svg>">
+</head>
+<body>
+<header class="cab"><div class="cab-dentro">
+  <a class="logo" href="index.html"><i></i> NetPanel</a>
+  <nav>
+    <a class="activa" href="index.html">Proyecto</a>
+    <a href="uso.html">Usar la app</a>
+    <a href="codigo.html">El código</a>
+    <a href="tfg.html">Guía del proyecto</a>
+    <a href="defensa.html">Defensa</a>
+    <a href="https://github.com/melvinfranco99/panel-monitorizacion-equipos">GitHub</a>
+    <button class="tema" aria-label="Cambiar tema">◐</button>
+  </nav>
+</div></header>
+
+<main class="contenido">
+  <p class="eyebrow">Proyecto Intermodular · Python + Flask + SQLite</p>
+  <h1>Saber de un vistazo qué equipos de la red funcionan y cuáles no</h1>
+  <p class="lead">NetPanel es una aplicación web que comprueba cada pocos segundos si los ordenadores, servidores, routers e impresoras de una red responden, muestra su IP y su latencia, y guarda el historial para calcular su disponibilidad (<em>uptime</em>).</p>
+  <div class="botones">
+    <a class="btn" href="uso.html">Instalar y usar</a>
+    <a class="btn sec" href="#demo-viva">Probar la demo</a>
+    <a class="btn sec" href="https://github.com/melvinfranco99/panel-monitorizacion-equipos">Ver el código</a>
+  </div>
+
+  <figure class="captura">
+    <img src="img/inicio.png" alt="Panel principal: 12 equipos, 10 responden y 2 caídos, con tarjetas por equipo">
+    <figcaption>Figura 1. Panel principal. Cada tarjeta es un equipo: borde verde si responde y rojo si está caído. Abajo, su disponibilidad en las últimas 24 h.</figcaption>
+  </figure>
+
+  <h2 id="problema">El problema que resuelve</h2>
+  <div class="rejilla">
+    <div class="caja"><h3>Sin monitorización</h3><p>El técnico se entera de que el servidor de ficheros está caído cuando llama un usuario enfadado. No sabe desde cuándo falla ni si es la primera vez.</p></div>
+    <div class="caja destacada"><h3>Con NetPanel</h3><p>El panel lo marca en rojo en menos de un minuto, apunta la hora exacta de la caída y de la recuperación, y puede avisar por Telegram. Con el historial se ve qué equipos fallan a menudo.</p></div>
+    <div class="caja"><h3>Para quién</h3><p>Pequeñas empresas, institutos, oficinas o una casa con varios equipos: sitios donde una herramienta como Zabbix o PRTG es demasiado grande o cara.</p></div>
+  </div>
+
+  <h2 id="funciones">Qué hace</h2>
+  <div class="rejilla">
+    <div class="caja"><span class="etq">Estado</span><h3>¿Responde o no?</h3><p>Ping (ICMP) o conexión TCP a un puerto: 80 para una web, 445 para Samba, 3389 para escritorio remoto…</p></div>
+    <div class="caja"><span class="etq">Datos</span><h3>IP y latencia</h3><p>Dirección, tipo de equipo, ubicación y tiempo de respuesta en milisegundos.</p></div>
+    <div class="caja"><span class="etq">Historial</span><h3>Disponibilidad</h3><p>Porcentaje de respuestas en las últimas 24 h, 7 y 30 días, con barras por tramos y gráfica de latencia.</p></div>
+    <div class="caja"><span class="etq">Incidencias</span><h3>Caídas y recuperaciones</h3><p>Registro con fecha y hora de cada cambio de estado y avisos opcionales por Telegram.</p></div>
+    <div class="caja"><span class="etq">Gestión</span><h3>Alta, edición y baja</h3><p>Desde la web (con usuario administrador) o importando un CSV con muchos equipos.</p></div>
+    <div class="caja"><span class="etq">Seguridad</span><h3>Pensada desde el principio</h3><p>Contraseñas con hash, protección CSRF, validación de IP contra inyección de comandos y consultas SQL parametrizadas.</p></div>
+  </div>
+
+  <h2 id="demo-viva">Pruébalo aquí mismo</h2>
+  <p>GitHub Pages solo sirve páginas estáticas y no puede ejecutar Python, así que esta demo <strong>simula</strong> en tu navegador la lógica del monitor. <strong>Haz clic en un equipo para «desenchufarlo»</strong> y verás que no se marca caído al primer fallo, sino al segundo seguido (así se evitan falsas alarmas).</p>
+  <div class="demo" id="demo">
+    <div class="demo-res">
+      <div><b id="d-total">–</b><span>Equipos</span></div>
+      <div><b id="d-up" style="color:var(--ok)">–</b><span>Responden</span></div>
+      <div><b id="d-down" style="color:var(--mal)">–</b><span>Caídos</span></div>
+      <div><b id="d-uptime">–</b><span>Disponibilidad</span></div>
+    </div>
+    <div class="demo-eq" id="demo-eq"></div>
+    <div class="demo-log" id="demo-log" aria-live="polite"></div>
+  </div>
+
+  <h2 id="arquitectura">Cómo funciona por dentro</h2>
+  <p>La aplicación tiene dos partes que trabajan a la vez dentro del mismo programa Python: un <strong>monitor</strong> que comprueba los equipos en segundo plano y un <strong>servidor web</strong> (Flask) que enseña los resultados. Se comunican a través de la base de datos SQLite.</p>
+  <div class="diagrama">
+    <svg viewBox="0 0 900 360" role="img" aria-label="Arquitectura: navegador, Flask, SQLite, monitor y equipos de la red">
+      <defs><marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
+      <!-- navegador -->
+      <rect class="n" x="20" y="40" width="170" height="80" rx="10"/>
+      <text x="105" y="74" text-anchor="middle">Navegador</text>
+      <text class="t2" x="105" y="94" text-anchor="middle">HTML + CSS + JS</text>
+      <text class="t2" x="105" y="110" text-anchor="middle">fetch() cada 5 s</text>
+      <!-- flask -->
+      <rect class="na" x="290" y="30" width="200" height="100" rx="10"/>
+      <text x="390" y="62" text-anchor="middle">Servidor web Flask</text>
+      <text class="t2" x="390" y="82" text-anchor="middle">rutas.py · plantillas Jinja2</text>
+      <text class="t2" x="390" y="98" text-anchor="middle">API JSON /api/estado</text>
+      <text class="t2" x="390" y="114" text-anchor="middle">login + CSRF</text>
+      <!-- sqlite -->
+      <rect class="n" x="590" y="130" width="170" height="100" rx="10"/>
+      <text x="675" y="160" text-anchor="middle">SQLite</text>
+      <text class="t2" x="675" y="180" text-anchor="middle">equipos</text>
+      <text class="t2" x="675" y="196" text-anchor="middle">comprobaciones</text>
+      <text class="t2" x="675" y="212" text-anchor="middle">eventos</text>
+      <!-- monitor -->
+      <rect class="na" x="290" y="230" width="200" height="100" rx="10"/>
+      <text x="390" y="262" text-anchor="middle">Monitor (hilo)</text>
+      <text class="t2" x="390" y="282" text-anchor="middle">cada 30 s · pool de hilos</text>
+      <text class="t2" x="390" y="298" text-anchor="middle">ping / TCP en paralelo</text>
+      <text class="t2" x="390" y="314" text-anchor="middle">aviso Telegram</text>
+      <!-- red -->
+      <rect class="n" x="20" y="240" width="170" height="80" rx="10"/>
+      <text x="105" y="272" text-anchor="middle">Equipos de la red</text>
+      <text class="t2" x="105" y="292" text-anchor="middle">routers · servidores</text>
+      <text class="t2" x="105" y="308" text-anchor="middle">PCs · impresoras</text>
+      <!-- flechas -->
+      <path class="f" d="M190,70 H285"/><text class="t2" x="237" y="62" text-anchor="middle">HTTP</text>
+      <path class="f" d="M290,100 H195"/><text class="t2" x="237" y="116" text-anchor="middle">JSON</text>
+      <path class="f" d="M490,90 C560,90 620,100 640,125"/><text class="t2" x="590" y="86">lee</text>
+      <path class="f fa" d="M490,290 C560,290 630,270 650,235"/><text class="t2" x="585" y="300">escribe</text>
+      <path class="f fa" d="M290,270 H195"/><text class="t2" x="243" y="262" text-anchor="middle">ICMP / TCP</text>
+      <path class="f" d="M190,295 H285"/><text class="t2" x="243" y="312" text-anchor="middle">respuesta</text>
+    </svg>
+  </div>
+
+  <h3>Un ciclo de comprobación, paso a paso</h3>
+  <ol class="pasos">
+    <li>El monitor lee de la tabla <code>equipos</code> los que están activos.</li>
+    <li>Lanza las comprobaciones <strong>todas a la vez</strong> con un <code>ThreadPoolExecutor</code>. Si se hiciesen una detrás de otra, 50 equipos caídos × 1 s de espera tardarían 50 s.</li>
+    <li>Para cada equipo ejecuta <code>ping -c 1 -W 1 IP</code> (o abre una conexión TCP si tiene puerto) y mide la latencia.</li>
+    <li>Guarda el resultado en <code>comprobaciones</code>: esto es el <strong>historial</strong>.</li>
+    <li>Aplica la regla: si responde → <em>up</em>; si falla <strong>2 veces seguidas</strong> → <em>down</em>. Si el estado cambia, lo apunta en <code>eventos</code> y avisa.</li>
+    <li>Borra el historial con más de 30 días y espera al siguiente ciclo.</li>
+  </ol>
+
+  <h3>¿Ping o TCP?</h3>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th></th><th>Ping (ICMP)</th><th>Conexión TCP a un puerto</th></tr></thead>
+    <tbody>
+      <tr><td>Capa OSI</td><td>3 · Red</td><td>4 · Transporte</td></tr>
+      <tr><td>Qué demuestra</td><td>Que el equipo está encendido y es alcanzable</td><td>Que un <strong>servicio concreto</strong> está escuchando (web, ficheros…)</td></tr>
+      <tr><td>Cuándo falla aunque el equipo funcione</td><td>Si un cortafuegos bloquea ICMP (Windows lo hace por defecto)</td><td>Si el servicio está parado aunque la máquina esté encendida (¡y eso es lo que queremos saber!)</td></tr>
+      <tr><td>Ejemplos</td><td>Routers, switches, PCs, impresoras</td><td>80/443 web, 22 SSH, 445 SMB, 3389 RDP, 53 DNS</td></tr>
+    </tbody>
+  </table></div>
+
+  <figure class="captura">
+    <img src="img/detalle.png" alt="Detalle de un equipo con disponibilidad por tramos, gráfica de latencia y cambios de estado">
+    <figcaption>Figura 2. Ficha de un equipo: disponibilidad en 24 h / 7 / 30 días, barras por hora, gráfica de latencia y registro de caídas.</figcaption>
+  </figure>
+
+  <h2 id="tecnologias">Tecnologías y por qué se eligieron</h2>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Pieza</th><th>Tecnología</th><th>Motivo</th></tr></thead>
+    <tbody>
+      <tr><td>Lenguaje</td><td>Python 3</td><td>Sencillo, multiplataforma y muy usado en administración de sistemas y automatización.</td></tr>
+      <tr><td>Web</td><td>Flask</td><td>Microframework: poco código, fácil de entender entero. Django sería excesivo para este tamaño.</td></tr>
+      <tr><td>Base de datos</td><td>SQLite</td><td>Un solo fichero, sin servidor que instalar. Suficiente para cientos de equipos.</td></tr>
+      <tr><td>Plantillas</td><td>Jinja2</td><td>Viene con Flask; escapa el HTML automáticamente (protege contra XSS).</td></tr>
+      <tr><td>Interfaz</td><td>HTML, CSS y JavaScript sin librerías</td><td>Funciona sin Internet dentro de una red cerrada de empresa; gráfica dibujada en SVG.</td></tr>
+      <tr><td>Producción</td><td>gunicorn + nginx + systemd</td><td>Estándar en servidores Linux: proceso robusto, HTTPS y arranque automático.</td></tr>
+      <tr><td>Laboratorio</td><td>Docker Compose</td><td>Red de pruebas con varios «equipos» que se pueden apagar a voluntad.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="comparativa">¿Y por qué no usar Zabbix o Nagios?</h2>
+  <p>Existen herramientas profesionales. Conocerlas y compararlas es parte del proyecto:</p>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Herramienta</th><th>Tipo</th><th>Ventaja</th><th>Inconveniente para una pyme pequeña</th></tr></thead>
+    <tbody>
+      <tr><td>Zabbix</td><td>Libre</td><td>Muy completa: agentes, SNMP, plantillas, gráficas</td><td>Instalación y aprendizaje costosos (servidor, base de datos, frontend PHP)</td></tr>
+      <tr><td>Nagios Core</td><td>Libre</td><td>Estándar histórico, muchos plugins</td><td>Configuración por ficheros de texto, interfaz anticuada</td></tr>
+      <tr><td>PRTG</td><td>Comercial</td><td>Muy fácil, autodescubrimiento</td><td>De pago a partir de 100 sensores, solo Windows</td></tr>
+      <tr><td>Uptime Kuma</td><td>Libre</td><td>Bonita y sencilla</td><td>Pensada para webs/servicios más que para inventario de red</td></tr>
+      <tr><td><strong>NetPanel</strong></td><td>Libre (este proyecto)</td><td>Ligera, en español, se entiende y se adapta entera</td><td>Sin SNMP ni agentes (posibles mejoras futuras)</td></tr>
+    </tbody>
+  </table></div>
+
+  <hr>
+  <div class="rejilla">
+    <a class="caja" href="uso.html" style="text-decoration:none;color:inherit"><span class="etq">Siguiente</span><h3>Usar la app →</h3><p>Laboratorio, casa y empresa.</p></a>
+    <a class="caja" href="codigo.html" style="text-decoration:none;color:inherit"><span class="etq">Entenderlo</span><h3>El código explicado →</h3><p>Fichero por fichero.</p></a>
+    <a class="caja" href="tfg.html" style="text-decoration:none;color:inherit"><span class="etq">Proyecto</span><h3>Guía del proyecto →</h3><p>Plan, memoria y qué estudiar.</p></a>
+    <a class="caja" href="defensa.html" style="text-decoration:none;color:inherit"><span class="etq">Tribunal</span><h3>Defensa →</h3><p>Guion y preguntas con respuesta.</p></a>
+  </div>
+</main>
+<footer class="pie">NetPanel · Proyecto Intermodular · Código libre (licencia MIT)</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block titulo %}Equipos{% endblock %}
+{% block contenido %}
+<section class="resumen" id="resumen">
+  <div class="tarjeta-dato"><span class="dato" id="r-total">–</span><span class="etiqueta">Equipos vigilados</span></div>
+  <div class="tarjeta-dato ok"><span class="dato" id="r-up">–</span><span class="etiqueta">Responden</span></div>
+  <div class="tarjeta-dato mal"><span class="dato" id="r-down">–</span><span class="etiqueta">Caídos</span></div>
+  <div class="tarjeta-dato"><span class="dato" id="r-uptime">–</span><span class="etiqueta">Disponibilidad 24 h</span></div>
+</section>
+
+<div class="herramientas">
+  <div class="filtros" id="filtros">
+    <button class="filtro activo" data-tipo="">Todos</button>
+    {% for t in tipos %}<button class="filtro" data-tipo="{{ t }}">{{ t|capitalize }}</button>{% endfor %}
+  </div>
+  <div class="derecha">
+    <input type="search" id="buscar" placeholder="Buscar nombre o IP…" aria-label="Buscar">
+    {% if es_admin %}
+    <form method="post" action="{{ url_for('web.comprobar_ahora') }}" class="en-linea">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="boton">Comprobar ahora</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+<p class="nota" id="actualizado">Cargando…</p>
+<section class="rejilla" id="rejilla"></section>
+<div class="vacio oculto" id="vacio">
+  <p>Todavía no hay equipos.</p>
+  {% if es_admin %}<a class="boton" href="{{ url_for('web.nuevo') }}">Añadir el primero</a>
+  {% else %}<p>Inicia sesión como administrador para añadirlos, o impórtalos con <code>python herramientas.py importar fichero.csv</code>.</p>{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}<script>Panel.iniciarInicio();</script>{% endblock %}

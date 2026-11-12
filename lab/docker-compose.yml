@@ -1,0 +1,68 @@
+# LABORATORIO CONTROLADO
+# Crea una red privada 172.30.0.0/24 con varios "equipos" (contenedores)
+# y el panel vigilándolos. Puedes apagar equipos para simular averías.
+#
+#   cd lab
+#   docker compose up -d --build        -> abre http://localhost:5000
+#   docker compose stop pc-contabilidad -> en ~1 min aparece CAÍDO
+#   docker compose start pc-contabilidad-> vuelve a RESPONDE
+#   docker compose down -v              -> lo borra todo
+
+name: netpanel-lab
+
+x-equipo: &equipo
+  image: alpine:3.20
+  command: ["sleep", "infinity"]
+  restart: "no"
+
+services:
+  panel:
+    build: ..
+    container_name: netpanel
+    ports: ["5000:5000"]
+    environment:
+      MONITOR_INTERVALO: "10"
+      MONITOR_ADMIN_PASSWORD: "laboratorio"
+      SECRET_KEY: "solo-para-el-laboratorio"
+    # Al arrancar: importa los equipos del laboratorio y lanza el servidor
+    command: sh -c "python herramientas.py importar lab/equipos_lab.csv && gunicorn -w 1 --threads 8 -b 0.0.0.0:5000 wsgi:app"
+    volumes: ["datos:/app/instance"]
+    networks: { red-lab: { ipv4_address: 172.30.0.10 } }
+
+  router:
+    <<: *equipo
+    container_name: lab-router
+    networks: { red-lab: { ipv4_address: 172.30.0.2 } }
+
+  servidor-web:
+    image: nginx:alpine
+    container_name: lab-servidor-web
+    networks: { red-lab: { ipv4_address: 172.30.0.20 } }
+
+  servidor-ficheros:
+    <<: *equipo
+    container_name: lab-servidor-ficheros
+    networks: { red-lab: { ipv4_address: 172.30.0.21 } }
+
+  pc-recepcion:
+    <<: *equipo
+    container_name: lab-pc-recepcion
+    networks: { red-lab: { ipv4_address: 172.30.0.50 } }
+
+  pc-contabilidad:
+    <<: *equipo
+    container_name: lab-pc-contabilidad
+    networks: { red-lab: { ipv4_address: 172.30.0.51 } }
+
+  impresora:
+    <<: *equipo
+    container_name: lab-impresora
+    networks: { red-lab: { ipv4_address: 172.30.0.100 } }
+
+networks:
+  red-lab:
+    ipam:
+      config: [{ subnet: 172.30.0.0/24 }]
+
+volumes:
+  datos:

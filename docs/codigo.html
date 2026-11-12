@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El código de NetPanel</title>
+<meta name="description" content="Explicación fichero a fichero del código de NetPanel.">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%2316a34a'/></svg>">
+</head>
+<body>
+<header class="cab"><div class="cab-dentro">
+  <a class="logo" href="index.html"><i></i> NetPanel</a>
+  <nav>
+    <a href="index.html">Proyecto</a>
+    <a href="uso.html">Usar la app</a>
+    <a class="activa" href="codigo.html">El código</a>
+    <a href="tfg.html">Guía del proyecto</a>
+    <a href="defensa.html">Defensa</a>
+    <a href="https://github.com/melvinfranco99/panel-monitorizacion-equipos">GitHub</a>
+    <button class="tema" aria-label="Cambiar tema">◐</button>
+  </nav>
+</div></header>
+
+<main class="contenido con-indice">
+  <aside class="indice">
+    <a href="#estructura">Estructura</a>
+    <a href="#config">config.py</a>
+    <a href="#db">db.py</a>
+    <a href="#comprobador">comprobador.py</a>
+    <a href="#monitor">monitor.py</a>
+    <a href="#estadisticas">estadisticas.py</a>
+    <a href="#seguridad">seguridad.py</a>
+    <a href="#rutas">rutas.py</a>
+    <a href="#init">__init__.py</a>
+    <a href="#frontend">Plantillas y JS</a>
+    <a href="#tests">Tests</a>
+    <a href="#peticion">Una petición completa</a>
+  </aside>
+  <div>
+  <p class="eyebrow">Entender cada línea</p>
+  <h1>El código, fichero a fichero</h1>
+  <p class="lead">Unas 1.400 líneas en total (unas 900 de Python). Si puedes contar con tus palabras lo que hay en esta página, puedes defender el proyecto.</p>
+  <div class="caja aviso"><p><strong>Consejo:</strong> abre cada fichero en tu editor mientras lees esto. Cambia algo (el intervalo, un color, un texto), ejecuta y mira qué pasa. Lo que rompes y arreglas tú mismo es lo que de verdad aprendes.</p></div>
+
+  <h2 id="estructura">Estructura del proyecto</h2>
+<pre>panel-monitorizacion-equipos/
+├── panel/                  ← la aplicación (paquete Python)
+│   ├── __init__.py         ← create_app(): monta todo
+│   ├── config.py           ← configuración leída del .env
+│   ├── db.py               ← tablas SQLite y conexión
+│   ├── comprobador.py      ← ping y TCP: ¿responde el equipo?
+│   ├── monitor.py          ← hilo que comprueba cada X segundos
+│   ├── estadisticas.py     ← cálculo de disponibilidad
+│   ├── seguridad.py        ← login y CSRF
+│   ├── rutas.py            ← URLs: páginas y API JSON
+│   ├── templates/          ← HTML (Jinja2)
+│   └── static/             ← estilo.css y app.js
+├── tests/test_panel.py     ← 22 pruebas automáticas
+├── run.py                  ← arrancar en desarrollo / casa
+├── wsgi.py                 ← arrancar con gunicorn (producción)
+├── herramientas.py         ← importar CSV, comprobar, demo
+├── ejemplos/*.csv          ← listas de equipos de ejemplo
+├── lab/                    ← laboratorio Docker
+├── deploy/                 ← systemd, nginx, script de instalación
+└── docs/                   ← esta web (GitHub Pages)</pre>
+  <p>El principio que sigue la organización es la <strong>separación de responsabilidades</strong>: cada fichero hace una sola cosa. Así, si mañana quiero cambiar SQLite por PostgreSQL, solo toco <code>db.py</code>.</p>
+
+  <h2 id="config">config.py — la configuración</h2>
+  <p>Lee los valores de <strong>variables de entorno</strong> (el fichero <code>.env</code> se carga con <code>python-dotenv</code>). Así las contraseñas no están escritas en el código ni se suben a GitHub (<code>.env</code> está en <code>.gitignore</code>). Es una práctica de la metodología <em>Twelve-Factor App</em>.</p>
+<pre>INTERVALO = int(os.environ.get("MONITOR_INTERVALO", "30"))
+FALLOS_PARA_CAIDO = int(os.environ.get("MONITOR_FALLOS_PARA_CAIDO", "2"))</pre>
+
+  <h2 id="db">db.py — la base de datos</h2>
+  <p>Tres tablas:</p>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Tabla</th><th>Una fila es…</th><th>Campos clave</th></tr></thead>
+    <tbody>
+      <tr><td><code>equipos</code></td><td>un equipo vigilado, con su estado actual</td><td>id, nombre, ip (UNIQUE), tipo, puerto, estado, latencia_ms, fallos_consecutivos</td></tr>
+      <tr><td><code>comprobaciones</code></td><td>una comprobación (el historial)</td><td>equipo_id (FK), fecha, responde (0/1), latencia_ms</td></tr>
+      <tr><td><code>eventos</code></td><td>un cambio de estado (incidencia)</td><td>equipo_id (FK), fecha, estado_anterior, estado_nuevo</td></tr>
+    </tbody>
+  </table></div>
+  <p>Relación <strong>1 a N</strong>: un equipo tiene muchas comprobaciones y muchos eventos. <code>ON DELETE CASCADE</code> hace que al borrar un equipo se borre su historial. Hay un <strong>índice</strong> en <code>(equipo_id, fecha)</code> porque casi todas las consultas filtran por esas dos columnas; sin él, SQLite recorrería la tabla entera.</p>
+  <p>Tres detalles que conviene saber explicar:</p>
+  <ul>
+    <li><code>row_factory = sqlite3.Row</code> → acceder a <code>fila["ip"]</code> en vez de <code>fila[2]</code>.</li>
+    <li><code>PRAGMA journal_mode = WAL</code> → permite leer (la web) mientras se escribe (el monitor) sin bloquearse.</li>
+    <li><code>get_db()</code> guarda la conexión en <code>g</code>, un objeto de Flask que vive lo que dura una petición; <code>cerrar_db</code> la cierra al terminar.</li>
+  </ul>
+
+  <h2 id="comprobador">comprobador.py — ¿responde el equipo?</h2>
+  <p>El corazón técnico. <code>hacer_ping()</code> ejecuta el comando <code>ping</code> del sistema operativo:</p>
+<pre>comando = ["ping", "-c", "1", "-W", "1", host]          # Linux
+comando = ["ping", "-n", "1", "-w", "1000", host]       # Windows
+resultado = subprocess.run(comando, capture_output=True, text=True, timeout=3)</pre>
+  <ul>
+    <li><strong>¿Por qué el comando y no enviar ICMP desde Python?</strong> Crear paquetes ICMP a mano necesita un <em>raw socket</em>, que exige permisos de root. El comando <code>ping</code> ya tiene esos permisos concedidos por el sistema.</li>
+    <li><strong>Código de salida</strong> (<code>returncode</code>): 0 = respondió. En Windows hay una trampa: «Host de destino inalcanzable» también devuelve 0, por eso se comprueba que en la salida aparezca <code>TTL=</code>.</li>
+    <li><strong>Latencia</strong>: se extrae con una expresión regular de <code>time=12.3 ms</code>.</li>
+    <li><strong>Seguridad</strong>: se pasa una <em>lista</em> de argumentos y sin <code>shell=True</code>, y antes <code>direccion_valida()</code> solo acepta IPs o nombres DNS. Si alguien escribiera <code>1.1.1.1; rm -rf /</code> como IP, se rechaza (hay un test que lo comprueba).</li>
+  </ul>
+  <p><code>comprobar_tcp()</code> usa <code>socket.create_connection()</code>: si se completa el saludo de tres pasos (SYN → SYN-ACK → ACK) el puerto está abierto y el servicio escucha.</p>
+
+  <h2 id="monitor">monitor.py — el vigilante</h2>
+  <p>La clase <code>Monitor</code> arranca un <strong>hilo</strong> (<code>threading.Thread</code>, <code>daemon=True</code> para que muera con el programa) con un bucle infinito:</p>
+<pre>while not self._parar.is_set():
+    self._ciclo_seguro()
+    self._parar.wait(self.config["INTERVALO"])   # espera, pero se puede interrumpir</pre>
+  <p>Dentro de cada ciclo, las comprobaciones se hacen <strong>en paralelo</strong>:</p>
+<pre>with ThreadPoolExecutor(max_workers=min(64, len(equipos))) as pool:
+    resultados = list(pool.map(lambda e: comprobar_equipo(e, timeout, demo), equipos))</pre>
+  <p>Usar hilos aquí es correcto aunque Python tenga el GIL, porque el trabajo es de <strong>entrada/salida</strong> (esperar respuestas de la red), no de cálculo: mientras un hilo espera, los otros avanzan.</p>
+  <p>La regla de estado está en una <strong>función pura</strong> (sin base de datos ni red), así se puede probar fácilmente:</p>
+<pre>def calcular_estado(estado_actual, fallos_consecutivos, responde, fallos_para_caido):
+    if responde:
+        return "up", 0
+    fallos = fallos_consecutivos + 1
+    if fallos >= fallos_para_caido:
+        return "down", fallos
+    return estado_actual, fallos</pre>
+  <p>Es una pequeña <strong>máquina de estados</strong>: desconocido → up ⇄ down. Exigir 2 fallos seguidos evita falsas alarmas por un paquete perdido (en Wi-Fi pasa a menudo).</p>
+  <p>Un <code>threading.Lock</code> impide que se ejecuten dos ciclos a la vez (por ejemplo, el automático y el del botón «Comprobar ahora»).</p>
+
+  <h2 id="estadisticas">estadisticas.py — la disponibilidad</h2>
+  <p>La disponibilidad es simplemente:</p>
+  <p style="text-align:center;font-size:1.1rem"><strong>disponibilidad = comprobaciones con respuesta ÷ comprobaciones totales × 100</strong></p>
+  <p>Como <code>responde</code> vale 0 o 1, la media es directamente ese porcentaje, y SQL lo calcula en una línea:</p>
+<pre>SELECT AVG(responde) * 100 FROM comprobaciones WHERE equipo_id = ? AND fecha >= ?</pre>
+  <p>Para las barras se agrupa el historial en tramos (1 hora para 24 h, 6 horas para 7 días, 1 día para 30 días).</p>
+  <div class="caja"><p><strong>Dato para la defensa — los «nueves»:</strong> 99 % de disponibilidad son 7,2 h caído al mes; 99,9 % son 43 min; 99,99 % son 4,3 min. Los contratos de servicio (SLA) se expresan así.</p></div>
+
+  <h2 id="seguridad">seguridad.py — login y CSRF</h2>
+  <ul>
+    <li><strong>Contraseña con hash</strong>: <code>generate_password_hash</code> (Werkzeug, algoritmo scrypt con sal). Se compara con <code>check_password_hash</code>. Nunca se compara texto plano.</li>
+    <li><strong>Sesión</strong>: Flask guarda <code>session["admin"] = True</code> en una cookie <em>firmada</em> con <code>SECRET_KEY</code>; el usuario puede leerla pero no falsificarla.</li>
+    <li><strong>CSRF</strong>: cada formulario lleva un token aleatorio guardado en la sesión. Antes de cada POST se comprueba. Así otra web no puede hacer que tu navegador borre equipos sin que lo sepas.</li>
+    <li><strong>Decoradores</strong> <code>@login_requerido</code> y <code>@lectura_permitida</code>: envuelven una función para añadir la comprobación sin repetir código.</li>
+    <li><code>hmac.compare_digest</code> compara en tiempo constante (evita ataques de temporización).</li>
+  </ul>
+
+  <h2 id="rutas">rutas.py — las URLs</h2>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Método</th><th>URL</th><th>Qué hace</th><th>Acceso</th></tr></thead>
+    <tbody>
+      <tr><td>GET</td><td><code>/</code></td><td>Panel principal</td><td>lectura</td></tr>
+      <tr><td>GET</td><td><code>/equipo/&lt;id&gt;</code></td><td>Ficha y gráficas de un equipo</td><td>lectura</td></tr>
+      <tr><td>GET</td><td><code>/incidencias</code></td><td>Caídas y recuperaciones</td><td>lectura</td></tr>
+      <tr><td>GET/POST</td><td><code>/equipos/nuevo</code></td><td>Alta</td><td>admin</td></tr>
+      <tr><td>GET/POST</td><td><code>/equipos/&lt;id&gt;/editar</code></td><td>Modificación</td><td>admin</td></tr>
+      <tr><td>POST</td><td><code>/equipos/&lt;id&gt;/borrar</code></td><td>Baja</td><td>admin</td></tr>
+      <tr><td>POST</td><td><code>/comprobar-ahora</code></td><td>Lanza un ciclo inmediato</td><td>admin</td></tr>
+      <tr><td>GET</td><td><code>/api/estado</code></td><td>JSON con todos los equipos y el resumen</td><td>lectura</td></tr>
+      <tr><td>GET</td><td><code>/api/equipos/&lt;id&gt;/historial?horas=24</code></td><td>JSON con tramos y latencias</td><td>lectura</td></tr>
+    </tbody>
+  </table></div>
+  <p>Borrar usa <strong>POST</strong> y no GET a propósito: GET no debe cambiar nada (un buscador o un precargador de enlaces podría «visitar» un enlace de borrado).</p>
+  <p>Las consultas usan <strong>parámetros</strong> (<code>?</code> o <code>:nombre</code>): los datos nunca se pegan al texto SQL, así que no hay inyección SQL.</p>
+  <p>Tras guardar se hace <strong>redirect</strong> (patrón <em>Post/Redirect/Get</em>) para que al recargar la página no se reenvíe el formulario.</p>
+
+  <h2 id="init">__init__.py — create_app()</h2>
+  <p>Patrón <strong>application factory</strong>: una función que crea y devuelve la app. Ventaja: los tests pueden crear apps con otra configuración (base de datos temporal, sin monitor) sin tocar la real.</p>
+<pre>app = Flask(__name__)
+app.config.from_object(Config)      # 1. configuración
+db.inicializar(...)                 # 2. tablas
+seguridad.preparar(app)             # 3. CSRF y login
+app.register_blueprint(web)         # 4. rutas
+Monitor(app.config).iniciar()       # 5. hilo vigilante</pre>
+
+  <h2 id="frontend">Plantillas y JavaScript</h2>
+  <p><code>base.html</code> tiene la cabecera y el pie; las demás páginas la <strong>heredan</strong> con <code>{% extends "base.html" %}</code> y rellenan el bloque <code>contenido</code>. Jinja2 escapa automáticamente <code>{{ variable }}</code>, lo que evita XSS.</p>
+  <p>La página principal se actualiza sola con <strong>AJAX</strong>: <code>app.js</code> llama cada 5 s a <code>fetch("/api/estado")</code>, recibe JSON y redibuja las tarjetas sin recargar la página. Como aquí el HTML se construye en JavaScript, se usa la función <code>esc()</code> para escapar los textos.</p>
+  <p>La gráfica de latencia se dibuja a mano en <strong>SVG</strong> (sin Chart.js) para que el panel funcione en una red de empresa sin acceso a Internet.</p>
+  <p>El CSS usa <strong>variables</strong> (<code>--ok</code>, <code>--mal</code>…) y <code>prefers-color-scheme</code> para el modo oscuro automático, y <code>grid</code> con <code>auto-fill</code> para que las tarjetas se adapten al móvil (diseño <em>responsive</em>).</p>
+
+  <h2 id="tests">Tests automáticos</h2>
+<pre>pip install -r requirements-dev.txt
+python -m pytest -v</pre>
+  <p>22 pruebas con <code>pytest</code>: validación de IPs (incluidas maliciosas), regla de estado, ping real a 127.0.0.1, puerto TCP cerrado, registro de eventos, API, alta/edición/baja, que no se pueda añadir sin login y login incorrecto. Haz una captura de la salida para los anexos de la memoria.</p>
+
+  <h2 id="peticion">Recorrido de una petición completa</h2>
+  <p>Qué pasa cuando abres el panel, de principio a fin (muy útil para contar en la defensa):</p>
+  <ol class="pasos">
+    <li>El navegador pide <code>GET /</code>. Flask busca qué función tiene esa ruta: <code>inicio()</code>.</li>
+    <li><code>@lectura_permitida</code> comprueba si hace falta login.</li>
+    <li><code>render_template("inicio.html")</code> devuelve el HTML base; el navegador pide también <code>estilo.css</code> y <code>app.js</code>.</li>
+    <li><code>app.js</code> ejecuta <code>fetch("/api/estado")</code>. Flask ejecuta <code>api_estado()</code>, que consulta SQLite y responde JSON.</li>
+    <li>El JavaScript dibuja las tarjetas. A los 5 s repite el paso 4.</li>
+    <li>Mientras tanto, en paralelo, el hilo monitor sigue haciendo pings y escribiendo en SQLite. La próxima vez que el navegador pregunte, verá los datos nuevos.</li>
+  </ol>
+  </div>
+</main>
+<footer class="pie">NetPanel · Proyecto Intermodular</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

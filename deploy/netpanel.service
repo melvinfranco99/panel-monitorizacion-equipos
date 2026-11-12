@@ -1,0 +1,30 @@
+# Servicio systemd: arranca el panel al encender el servidor y lo reinicia si falla.
+#   sudo cp deploy/netpanel.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now netpanel
+#   journalctl -u netpanel -f        (ver el registro)
+[Unit]
+Description=NetPanel - panel de monitorizacion de equipos
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# Usuario sin privilegios creado con: sudo useradd -r -s /usr/sbin/nologin netpanel
+User=netpanel
+Group=netpanel
+WorkingDirectory=/opt/netpanel
+EnvironmentFile=/opt/netpanel/.env
+# Solo escucha en 127.0.0.1: el acceso desde fuera pasa por nginx (HTTPS)
+ExecStart=/opt/netpanel/.venv/bin/gunicorn -w 1 --threads 8 -b 127.0.0.1:5000 wsgi:app
+Restart=on-failure
+RestartSec=5
+
+# Endurecimiento básico
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/netpanel/instance
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

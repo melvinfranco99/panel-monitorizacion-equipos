@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block contenido %}
+<h1>{{ titulo }}</h1>
+<form method="post" class="formulario">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>Nombre<input name="nombre" required maxlength="60" value="{{ datos.nombre or '' }}" placeholder="Servidor de ficheros"></label>
+  <label>Dirección IP o nombre DNS<input name="ip" required value="{{ datos.ip or '' }}" placeholder="192.168.1.10"></label>
+  <label>Tipo
+    <select name="tipo">
+      {% for t in tipos %}<option value="{{ t }}" {% if datos.tipo == t %}selected{% endif %}>{{ t|capitalize }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Puerto TCP (opcional)
+    <input name="puerto" inputmode="numeric" value="{{ datos.puerto or '' }}" placeholder="vacío = ping">
+    <small>Déjalo vacío para usar ping. Pon 80, 443, 22, 445, 3389… para comprobar que un servicio concreto responde (o si el equipo bloquea el ping).</small>
+  </label>
+  <label>Ubicación<input name="ubicacion" value="{{ datos.ubicacion or '' }}" placeholder="Rack, Oficina 1…"></label>
+  <label>Descripción<textarea name="descripcion" rows="2">{{ datos.descripcion or '' }}</textarea></label>
+  <label class="check"><input type="checkbox" name="activo" {% if datos.activo %}checked{% endif %}> Vigilar este equipo</label>
+  <div class="acciones">
+    <button class="boton">Guardar</button>
+    <a class="boton secundario" href="{{ url_for('web.inicio') }}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

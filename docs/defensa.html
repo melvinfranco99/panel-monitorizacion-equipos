@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preparar la defensa</title>
+<meta name="description" content="Guion de presentación de 20 minutos y preguntas frecuentes del tribunal con respuestas.">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%2316a34a'/></svg>">
+</head>
+<body>
+<header class="cab"><div class="cab-dentro">
+  <a class="logo" href="index.html"><i></i> NetPanel</a>
+  <nav>
+    <a href="index.html">Proyecto</a>
+    <a href="uso.html">Usar la app</a>
+    <a href="codigo.html">El código</a>
+    <a href="tfg.html">Guía del proyecto</a>
+    <a class="activa" href="defensa.html">Defensa</a>
+    <a href="https://github.com/melvinfranco99/panel-monitorizacion-equipos">GitHub</a>
+    <button class="tema" aria-label="Cambiar tema">◐</button>
+  </nav>
+</div></header>
+
+<main class="contenido con-indice">
+  <aside class="indice">
+    <a href="#formato">El formato</a>
+    <a href="#guion">Guion de 20 minutos</a>
+    <a href="#demo">La demo en directo</a>
+    <a href="#exponer">Cómo exponer</a>
+    <a href="#preguntas">Preguntas del tribunal</a>
+    <a href="#p-redes">· Redes</a>
+    <a href="#p-codigo">· Código y Flask</a>
+    <a href="#p-bd">· Base de datos</a>
+    <a href="#p-seg">· Seguridad</a>
+    <a href="#p-diseno">· Decisiones</a>
+    <a href="#p-real">· Uso real</a>
+    <a href="#p-proyecto">· El proyecto</a>
+    <a href="#nose">Si no sabes algo</a>
+  </aside>
+  <div>
+  <p class="eyebrow">Preparar la defensa</p>
+  <h1>Presentar y defender sin quedarte en blanco</h1>
+  <p class="lead">Guion diapositiva por diapositiva, plan de demostración con plan B y más de 40 preguntas probables con su respuesta.</p>
+
+  <h2 id="formato">El formato (según la guía)</h2>
+  <div class="rejilla">
+    <div class="caja"><h3>20 min máx.</h3><p>Exposición: trabajo, metodología, contenido, conclusiones y <strong>aportaciones originales</strong>.</p></div>
+    <div class="caja"><h3>10 min</h3><p>Preguntas del tribunal (docentes del ciclo).</p></div>
+    <div class="caja"><h3>Apoyo visual</h3><p>Presentación en PPT o similar (formato libre).</p></div>
+    <div class="caja"><h3>Antes de empezar</h3><p>Mostrar <strong>DNI</strong> y firmar la hoja de asistencia.</p></div>
+  </div>
+  <p>Solo defiendes si has aprobado la memoria. Se evalúa también la imagen personal, la expresión corporal, la ausencia de muletillas y el uso de vocabulario técnico del ciclo.</p>
+
+  <h2 id="guion">Guion de la presentación (≈ 17 min + margen)</h2>
+  <p>Unas 14 diapositivas. Poco texto en cada una: imágenes, diagramas y palabras clave. Lo que dices tú es lo importante.</p>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>#</th><th>Diapositiva</th><th>Tiempo</th><th>Qué decir</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Portada</td><td>0:30</td><td>«Buenos días. Soy …, y voy a presentar NetPanel, un panel web para monitorizar la disponibilidad de los equipos de una red.»</td></tr>
+      <tr><td>2</td><td>Índice</td><td>0:20</td><td>Los 5 bloques: problema, objetivos, solución, demostración y conclusiones.</td></tr>
+      <tr><td>3</td><td>El problema (justificación)</td><td>1:30</td><td>Ejemplo concreto: «Lunes, 9:00, el servidor de ficheros lleva caído desde el sábado y nadie lo sabía hasta que llegó el primer trabajador». Las pymes no tienen herramientas porque las profesionales son complejas o caras.</td></tr>
+      <tr><td>4</td><td>Contexto (introducción)</td><td>1:30</td><td>Qué es monitorizar; ICMP y TCP; disponibilidad y los «nueves» (99,9 % = 43 min/mes); herramientas existentes.</td></tr>
+      <tr><td>5</td><td>Objetivos</td><td>1:00</td><td>El general y los específicos. Volverás a ellos en las conclusiones.</td></tr>
+      <tr><td>6</td><td>Metodología y planificación</td><td>1:00</td><td>Fases (análisis, aprendizaje, desarrollo, pruebas, documentación), Gantt, herramientas (Git, VS Code, Docker, IA como apoyo).</td></tr>
+      <tr><td>7</td><td>Arquitectura</td><td>2:00</td><td>El diagrama: navegador ↔ Flask ↔ SQLite ↔ monitor ↔ red. Las dos partes que trabajan en paralelo.</td></tr>
+      <tr><td>8</td><td>Cómo se comprueba un equipo</td><td>1:30</td><td>Ciclo paso a paso; comprobaciones en paralelo; regla de 2 fallos seguidos; ping vs TCP.</td></tr>
+      <tr><td>9</td><td>Base de datos</td><td>1:00</td><td>Diagrama E-R de 3 tablas; cómo se calcula la disponibilidad con una consulta.</td></tr>
+      <tr><td>10</td><td>Seguridad</td><td>1:00</td><td>Hash, CSRF, inyección de comandos y SQL, XSS, HTTPS y mínimo privilegio en producción.</td></tr>
+      <tr><td>11</td><td><strong>Demostración</strong></td><td>3:00</td><td>Ver sección siguiente.</td></tr>
+      <tr><td>12</td><td>Implantación real</td><td>1:00</td><td>Casa (Raspberry Pi, reservas DHCP, Telegram) y empresa (VM, systemd, nginx HTTPS, cortafuegos, autorización).</td></tr>
+      <tr><td>13</td><td>Conclusiones y aportación propia</td><td>1:30</td><td>Objetivos cumplidos, tu mejora, dificultades, lo aprendido, mejoras futuras.</td></tr>
+      <tr><td>14</td><td>Gracias / preguntas</td><td>0:10</td><td>Enlace y QR a GitHub y a esta web.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="caja aviso"><p>Ensaya con cronómetro. Si te pasas de 17 min, recorta las diapositivas 4 y 6, nunca la demo ni las conclusiones.</p></div>
+
+  <h2 id="demo">La demostración en directo</h2>
+  <p>La demo es lo que más impresiona y lo que más puede fallar. Prepara <strong>tres niveles</strong>:</p>
+  <ol class="pasos">
+    <li><strong>Plan A, laboratorio Docker en tu portátil</strong> (no depende de la red del aula): ya arrancado antes de empezar. Muestra el panel → entra como admin → añade un equipo → <code>docker compose stop pc-contabilidad</code> → espera unos 20 s mientras explicas la regla de 2 fallos → aparece CAÍDO → muestra Incidencias → <code>docker compose start</code> → RECUPERADO. Si tienes Telegram configurado, enseña el aviso en el móvil.</li>
+    <li><strong>Plan B, modo demo</strong> (<code>MONITOR_MODO_DEMO=1</code>): funciona sin Docker ni red, con 7 días de historial simulado. Dilo con claridad: «esto es una simulación».</li>
+    <li><strong>Plan C, vídeo grabado</strong> de 1–2 minutos del plan A, guardado en el portátil <em>y</em> en un USB. Si nada funciona, lo pones con total tranquilidad.</li>
+  </ol>
+  <p>Antes de la defensa: portátil cargado, cargador, adaptador HDMI/USB-C, notificaciones desactivadas, navegador con zoom al 125 %, pestañas preparadas y la terminal con letra grande.</p>
+
+  <h2 id="exponer">Cómo exponer (lo que puntúa la rúbrica)</h2>
+  <div class="rejilla">
+    <div class="caja"><h3>Expresión verbal</h3><ul><li>Evita muletillas («eh», «o sea», «vale», «básicamente»): mejor un silencio.</li><li>Usa vocabulario técnico: ICMP, latencia, disponibilidad, proxy inverso, hilo, consulta parametrizada.</li><li>Vocaliza y no corras: los nervios aceleran.</li></ul></div>
+    <div class="caja"><h3>Expresión no verbal</h3><ul><li>Mira al tribunal, no a la pantalla.</li><li>De pie, postura abierta, manos visibles.</li><li>No leas las diapositivas: como mucho, una ficha con palabras clave.</li></ul></div>
+    <div class="caja"><h3>Imagen</h3><ul><li>Vestimenta formal-arreglada, como para una entrevista de trabajo.</li><li>Llega 15 minutos antes.</li></ul></div>
+  </div>
+
+  <h2 id="preguntas">Preguntas probables del tribunal</h2>
+  <p>Léelas, intenta responder tú primero y luego abre la respuesta. Las respuestas son guías: dilas con tus palabras.</p>
+
+  <h3 id="p-redes">Redes</h3>
+  <details><summary>¿Qué es exactamente un ping y en qué capa trabaja?</summary><div><p>Es un mensaje ICMP «echo request» (tipo 8) al que el destino contesta con un «echo reply» (tipo 0). ICMP es un protocolo de control que viaja dentro de IP, en la <strong>capa 3 (red)</strong> del modelo OSI. No usa puertos. Midiendo el tiempo entre la petición y la respuesta obtenemos la latencia o RTT.</p></div></details>
+  <details><summary>Si un equipo no responde al ping, ¿está apagado?</summary><div><p>No necesariamente. Puede estar encendido pero con un cortafuegos que bloquea ICMP (Windows lo hace por defecto), en otra red sin ruta, o puede haberse perdido el paquete. Por eso la aplicación permite comprobar por TCP y exige 2 fallos seguidos. Lo correcto es decir «no es alcanzable desde el monitor».</p></div></details>
+  <details><summary>¿Qué diferencia hay entre comprobar con ping y con TCP?</summary><div><p>El ping demuestra que la máquina es alcanzable (capa 3). La conexión TCP a un puerto (capa 4) demuestra que un <strong>servicio</strong> concreto escucha: un servidor web puede responder al ping con el servicio nginx caído. Para un servidor, lo que interesa al usuario es el servicio.</p></div></details>
+  <details><summary>Explica el saludo en tres pasos de TCP.</summary><div><p>El cliente envía SYN, el servidor responde SYN-ACK si el puerto está abierto (o RST si está cerrado) y el cliente confirma con ACK. Si se completa, <code>socket.create_connection()</code> tiene éxito y medimos cuánto tardó. Después cerramos la conexión.</p></div></details>
+  <details><summary>¿Qué es la latencia y qué valores son normales?</summary><div><p>El tiempo de ida y vuelta de un paquete (RTT), en milisegundos. En una LAN cableada, menos de 1–2 ms; por Wi-Fi, 2–20 ms; hacia Internet, 10–50 ms en España. Una latencia que sube mucho indica congestión o un problema de enlace aunque el equipo responda.</p></div></details>
+  <details><summary>¿Qué es el TTL?</summary><div><p><em>Time To Live</em>: un contador en la cabecera IP que cada router decrementa en 1; si llega a 0 se descarta el paquete. Evita bucles infinitos. En la respuesta del ping aparece y además da una pista del sistema operativo (Linux suele empezar en 64 y Windows en 128).</p></div></details>
+  <details><summary>¿Qué rango de IPs usa tu laboratorio y cuántos equipos caben?</summary><div><p><code>172.30.0.0/24</code>, una red privada (RFC 1918, rango 172.16.0.0/12). La máscara /24 deja 8 bits para hosts: 256 direcciones menos la de red y la de broadcast, <strong>254 hosts</strong>.</p></div></details>
+  <details><summary>¿Por qué recomiendas reservas DHCP?</summary><div><p>El panel identifica cada equipo por su IP. Si el DHCP le da otra IP al renovar la concesión, el panel lo verá caído y quizá otro equipo ocupe su IP. Con una reserva (asociar MAC → IP en el servidor DHCP) la IP es siempre la misma sin configurar IP estática en el equipo.</p></div></details>
+  <details><summary>¿Funcionaría con equipos de otra VLAN o de otra sede?</summary><div><p>Sí, siempre que haya ruta IP desde el servidor del panel y el cortafuegos permita ICMP o el puerto TCP. Entre VLANs la ruta la hace un router o switch de capa 3. Para otra sede, a través de una VPN entre sedes.</p></div></details>
+  <details><summary>¿Qué pasa si se cae el router donde está conectado el monitor?</summary><div><p>Todo aparecerá caído a la vez. Es un falso positivo masivo. Por eso conviene vigilar el propio router y una IP externa como 8.8.8.8: si todo cae a la vez, el problema está cerca del monitor. Una mejora futura sería definir dependencias (si cae el switch, no avisar de los equipos que cuelgan de él), como hace Nagios.</p></div></details>
+
+  <h3 id="p-codigo">Código, Python y Flask</h3>
+  <details><summary>¿Por qué Flask y no Django?</summary><div><p>Flask es un microframework: da lo mínimo (rutas, plantillas) y el resto lo eliges tú. Para una aplicación de este tamaño es más sencillo y se entiende entera. Django trae ORM, panel de administración y usuarios, útiles en proyectos grandes, pero aquí añadiría complejidad que no se necesita.</p></div></details>
+  <details><summary>¿Cómo consigues que la web funcione mientras se hacen los pings?</summary><div><p>Con un <strong>hilo</strong> en segundo plano (<code>threading.Thread</code>) que ejecuta el bucle del monitor, mientras el hilo principal atiende las peticiones web. Se comunican a través de la base de datos: el monitor escribe y la web lee. SQLite en modo WAL permite leer mientras se escribe.</p></div></details>
+  <details><summary>Si tienes 100 equipos y cada ping espera 1 s, ¿cuánto tarda un ciclo?</summary><div><p>En serie podría tardar 100 s, más que el intervalo de 30 s. Por eso uso un <code>ThreadPoolExecutor</code> con hasta 64 hilos que lanza las comprobaciones en paralelo: el ciclo tarda poco más que la comprobación más lenta, unos 2 s.</p></div></details>
+  <details><summary>Python tiene el GIL. ¿No impide eso que los hilos vayan en paralelo?</summary><div><p>El GIL impide que dos hilos ejecuten código Python <em>a la vez</em>, pero se libera cuando un hilo espera entrada/salida (red, disco, un subproceso). Aquí casi todo el tiempo es esperar a la red, así que los hilos sí aprovechan el paralelismo. Para cálculo intensivo habría que usar procesos.</p></div></details>
+  <details><summary>¿Por qué llamas al comando ping en vez de crear el paquete en Python?</summary><div><p>Crear paquetes ICMP necesita un <em>raw socket</em>, que exige privilegios de administrador. El ejecutable <code>ping</code> del sistema ya tiene ese permiso (capability o setuid), así la aplicación puede funcionar con un usuario sin privilegios, que es más seguro. Además es multiplataforma adaptando los parámetros.</p></div></details>
+  <details><summary>¿Qué es create_app() y por qué la usas?</summary><div><p>Es el patrón <em>application factory</em>: una función que construye la aplicación. Permite crear varias instancias con distinta configuración; por ejemplo, los tests crean una app con una base de datos temporal y sin el hilo monitor.</p></div></details>
+  <details><summary>¿Qué es un Blueprint?</summary><div><p>Un conjunto de rutas agrupadas que se registra en la app. Permite organizar la aplicación en módulos. Aquí hay uno, <code>web</code>, pero en una app mayor habría uno para la API, otro para la administración…</p></div></details>
+  <details><summary>¿Cómo se actualiza la página sin recargar?</summary><div><p>Con AJAX: el JavaScript llama cada 5 s a <code>fetch("/api/estado")</code>, que devuelve JSON, y redibuja las tarjetas. Una alternativa más eficiente serían WebSockets o Server-Sent Events, que empujan los cambios desde el servidor, pero para este volumen el sondeo es suficiente y más simple.</p></div></details>
+  <details><summary>¿Por qué no usas el servidor de Flask en producción?</summary><div><p>El servidor de desarrollo de Flask (Werkzeug) no está pensado para carga ni seguridad. En producción uso <strong>gunicorn</strong>, un servidor WSGI robusto, detrás de <strong>nginx</strong> que añade HTTPS, control de acceso por IP y sirve como proxy inverso.</p></div></details>
+  <details><summary>¿Por qué gunicorn con un solo worker (-w 1)?</summary><div><p>Cada worker es un proceso independiente que ejecuta <code>create_app()</code> y arrancaría su propio monitor, haciendo las comprobaciones por duplicado. Con un proceso y 8 hilos (<code>--threads 8</code>) hay un único monitor y se atienden varias peticiones a la vez. Para escalar más, separaría el monitor en un servicio aparte.</p></div></details>
+  <details><summary>¿Cómo has probado que funciona?</summary><div><p>De tres formas: 22 <strong>tests automáticos</strong> con pytest (validación, lógica de estados, ping real a localhost, API, permisos); un <strong>laboratorio Docker</strong> donde apago y enciendo equipos y compruebo que se detecta la caída y la recuperación; y uso en mi <strong>red de casa</strong> durante varios días.</p></div></details>
+
+  <h3 id="p-bd">Base de datos</h3>
+  <details><summary>Dibuja y explica el modelo de datos.</summary><div><p>Tres tablas: <code>equipos</code> (1) — (N) <code>comprobaciones</code>, y <code>equipos</code> (1) — (N) <code>eventos</code>. <code>equipos</code> guarda el estado actual para mostrarlo rápido; <code>comprobaciones</code> es el historial; <code>eventos</code> solo los cambios de estado. Las claves ajenas tienen <code>ON DELETE CASCADE</code>.</p></div></details>
+  <details><summary>¿Por qué guardas el estado en «equipos» si se puede calcular del historial?</summary><div><p>Es una desnormalización consciente por rendimiento: el panel pide el estado cada 5 s y así es un <code>SELECT</code> directo, sin buscar la última comprobación de cada equipo entre millones de filas. Además el contador de fallos consecutivos lo necesita el monitor.</p></div></details>
+  <details><summary>¿Cómo calculas la disponibilidad?</summary><div><p><code>SELECT AVG(responde)*100 FROM comprobaciones WHERE equipo_id=? AND fecha&gt;=?</code>. Como <code>responde</code> es 0 o 1, la media es la proporción de respuestas correctas.</p></div></details>
+  <details><summary>¿Por qué SQLite? ¿Aguantaría una empresa grande?</summary><div><p>SQLite no necesita servidor, es un fichero y es muy fiable. Con un solo escritor (el monitor) y pocos lectores va sobrado para cientos de equipos. Para miles de equipos, varios monitores o alta disponibilidad, migraría a PostgreSQL o a una base de series temporales (InfluxDB, TimescaleDB). Al tener el acceso a datos concentrado en <code>db.py</code>, el cambio está acotado.</p></div></details>
+  <details><summary>¿Para qué sirve el índice?</summary><div><p>El índice sobre <code>(equipo_id, fecha)</code> permite encontrar las comprobaciones de un equipo en un rango de fechas sin recorrer toda la tabla. Con millones de filas, pasa de segundos a milisegundos.</p></div></details>
+  <details><summary>¿La base de datos crece sin parar?</summary><div><p>No: cada ciclo borra las comprobaciones con más de <code>RETENCION_DIAS</code> (30 por defecto). Con 50 equipos cada 30 s son unos 4 millones de filas al mes, 200–300 MB.</p></div></details>
+
+  <h3 id="p-seg">Seguridad</h3>
+  <details><summary>¿Cómo guardas la contraseña del administrador?</summary><div><p>La contraseña viene de una variable de entorno (fichero <code>.env</code>, fuera de Git). Al arrancar se calcula su <strong>hash</strong> con <code>generate_password_hash</code> (scrypt con sal) y al iniciar sesión se compara con <code>check_password_hash</code>. Un hash no se puede «descifrar»; la sal impide usar tablas precalculadas.</p></div></details>
+  <details><summary>¿Qué pasaría si alguien pone «8.8.8.8; rm -rf /» como IP?</summary><div><p>Nada. Primero, <code>direccion_valida()</code> solo acepta IPs válidas o nombres DNS, así que se rechaza. Segundo, aunque pasara, <code>subprocess.run</code> recibe una lista de argumentos sin <code>shell=True</code>: no hay intérprete de comandos que entienda el <code>;</code>. Hay un test que lo comprueba.</p></div></details>
+  <details><summary>¿Es vulnerable a inyección SQL?</summary><div><p>No: todas las consultas usan parámetros (<code>?</code> o <code>:nombre</code>). El driver de SQLite envía los datos separados del SQL, así que nunca se interpretan como código.</p></div></details>
+  <details><summary>¿Qué es CSRF y cómo lo evitas?</summary><div><p><em>Cross-Site Request Forgery</em>: una web maliciosa hace que tu navegador, que tiene la sesión iniciada en el panel, envíe un formulario (por ejemplo, borrar un equipo). Lo evito con un token aleatorio en la sesión que se incluye en cada formulario; un atacante desde otra web no puede leerlo, así que su petición se rechaza con error 400.</p></div></details>
+  <details><summary>¿Y XSS?</summary><div><p>Si un equipo se llamara <code>&lt;script&gt;…</code>, podría ejecutarse en el navegador de quien mire el panel. Jinja2 escapa automáticamente las variables, y en el JavaScript uso una función <code>esc()</code> antes de insertar texto en el HTML.</p></div></details>
+  <details><summary>¿Lo pondrías accesible desde Internet?</summary><div><p>No. Revela el inventario de la red, que es información valiosa para un atacante. Lo dejaría en la red de administración, con HTTPS y acceso por IP; desde fuera, mediante VPN. Además activaría <code>LOGIN_LECTURA</code>.</p></div></details>
+  <details><summary>¿Qué medidas tiene el despliegue en servidor?</summary><div><p>Usuario de sistema sin shell ni privilegios (<code>netpanel</code>); gunicorn escuchando solo en 127.0.0.1; nginx con HTTPS y <code>allow/deny</code>; <code>.env</code> con permisos 600; endurecimiento de systemd (<code>NoNewPrivileges</code>, <code>ProtectSystem=strict</code>, <code>ProtectHome</code>). Es aplicar el principio de mínimo privilegio y la defensa en profundidad.</p></div></details>
+  <details><summary>¿Qué mejorarías en seguridad?</summary><div><p>Varios usuarios con roles (solo lectura/administrador) guardados en la base de datos, limitar intentos de login (protección contra fuerza bruta), registro de auditoría de quién cambia qué y autenticación contra el directorio activo (LDAP).</p></div></details>
+
+  <h3 id="p-diseno">Decisiones de diseño</h3>
+  <details><summary>¿Por qué 2 fallos seguidos para marcarlo caído?</summary><div><p>Para evitar falsas alarmas: un paquete perdido es normal, sobre todo en Wi-Fi. Con 2 fallos y 30 s de intervalo, una caída real se detecta en un minuto como mucho. Es un compromiso entre rapidez y fiabilidad, configurable con <code>MONITOR_FALLOS_PARA_CAIDO</code>.</p></div></details>
+  <details><summary>¿Por qué cada 30 segundos?</summary><div><p>Equilibrio entre detectar rápido, generar poco tráfico (un ping son ~100 bytes: despreciable) y no llenar la base de datos. En redes críticas se puede bajar a 10 s; en casa, 60 s es suficiente.</p></div></details>
+  <details><summary>¿Por qué no usaste Chart.js o Bootstrap?</summary><div><p>Para que el panel funcione en una red de empresa sin salida a Internet (no depende de un CDN) y para tener control total. La gráfica es un SVG sencillo generado con JavaScript, y el CSS ocupa unas 140 líneas.</p></div></details>
+  <details><summary>¿Por qué no hiciste una aplicación de escritorio?</summary><div><p>Una web se consulta desde cualquier dispositivo de la red (PC, móvil, tablet) sin instalar nada, y el monitor puede vivir en un servidor encendido 24/7. Varios técnicos pueden mirar el mismo panel a la vez.</p></div></details>
+  <details><summary>¿Qué diferencia hay con Zabbix?</summary><div><p>Zabbix es mucho más completo (agentes, SNMP, plantillas, escalado de alertas), pero su instalación y aprendizaje son costosos. NetPanel responde a la pregunta «¿está vivo?» de forma sencilla para redes pequeñas. En una empresa grande yo recomendaría Zabbix, y lo digo en la memoria.</p></div></details>
+
+  <h3 id="p-real">Uso real</h3>
+  <details><summary>¿Cómo lo instalarías en una empresa?</summary><div><p>Pedir autorización e inventario, crear una VM Linux en la VLAN de administración, ejecutar el script de instalación (crea usuario, entorno y servicio systemd), poner nginx con HTTPS, un nombre DNS interno, reglas de cortafuegos para permitir ICMP/TCP solo desde el monitor (en Windows por GPO), importar el inventario por CSV, configurar avisos y programar copias de la base de datos.</p></div></details>
+  <details><summary>¿Y en casa?</summary><div><p>En una Raspberry Pi siempre encendida, con reservas DHCP en el router para fijar las IPs, vigilando el router, el NAS, los PCs y 8.8.8.8 para saber si falla Internet, con avisos a Telegram. Sin abrir puertos al exterior: si quiero verlo fuera, por VPN.</p></div></details>
+  <details><summary>¿Cuánto costaría?</summary><div><p>El software es libre: 0 €. En casa, una Raspberry Pi (~60–80 € con fuente y tarjeta). En empresa, una VM pequeña en un servidor existente. El coste real son las horas de implantación; en la memoria hago un presupuesto con horas de técnico.</p></div></details>
+  <details><summary>¿Es legal monitorizar equipos?</summary><div><p>En tu red o con autorización del responsable, sí. Sin autorización, enviar paquetes de forma sistemática a redes ajenas puede considerarse un escaneo no autorizado. Además, si los equipos se asocian a personas («PC de Dirección»), es información sujeta al RGPD: acceso limitado al personal de sistemas.</p></div></details>
+
+  <h3 id="p-proyecto">Sobre el proyecto</h3>
+  <details><summary>¿Has utilizado inteligencia artificial?</summary><div><p>Sé honesto: «Sí, como apoyo para generar código base y documentación, igual que se usa documentación o Stack Overflow. Pero todo lo he revisado, probado y entiendo cada parte; de hecho puedo explicarle cualquier fichero. Además, la mejora X la implementé yo y el laboratorio, las pruebas y la memoria son trabajo mío.» Y estar preparado para que te pidan explicar un fragmento.</p></div></details>
+  <details><summary>¿Qué ha sido lo más difícil?</summary><div><p>Elige algo que te haya pasado de verdad. Ejemplos típicos: entender por qué Windows no responde al ping, que las comprobaciones fueran en paralelo, que el monitor no se arrancara dos veces con el recargador de Flask, o montar la red Docker con IPs fijas.</p></div></details>
+  <details><summary>¿Qué módulos del ciclo integra?</summary><div><p>Redes (direccionamiento, ICMP/TCP), sistemas operativos (Linux, servicios, permisos), programación (Python), bases de datos (modelo E-R, SQL), lenguajes de marcas y web (HTML, CSS, JSON), seguridad (hash, CSRF, inyección) y servicios de red (nginx, DNS, DHCP). Adapta la lista a los nombres de los módulos de tu ciclo.</p></div></details>
+  <details><summary>¿Qué mejorarías si tuvieras más tiempo?</summary><div><p>Descubrimiento automático de equipos, SNMP para ver CPU y tráfico, dependencias entre equipos, varios usuarios con roles, avisos por correo, ventanas de mantenimiento y separar el monitor en su propio servicio para escalar.</p></div></details>
+  <details><summary>¿Cumpliste todos los objetivos?</summary><div><p>Repásalos uno a uno con evidencia: «el objetivo de registrar el historial se cumple: aquí está la gráfica de 7 días»… Si alguno se cumplió parcialmente, dilo y explica por qué: la honestidad puntúa.</p></div></details>
+
+  <h2 id="nose">Si te preguntan algo que no sabes</h2>
+  <div class="caja destacada">
+    <p>No te quedes en silencio ni inventes. Fórmulas que funcionan:</p>
+    <ul>
+      <li>«No lo he implementado, pero lo abordaría así: …» (razona en voz alta).</li>
+      <li>«No lo sé con seguridad; creo que es … porque … Lo comprobaría en la documentación de …»</li>
+      <li>«Buena pregunta; es una limitación del proyecto y la tengo recogida en las mejoras futuras.»</li>
+    </ul>
+    <p>Razonar sobre lo que no sabes demuestra criterio profesional, que es justo lo que se evalúa.</p>
+  </div>
+  </div>
+</main>
+<footer class="pie">NetPanel · Proyecto Intermodular</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

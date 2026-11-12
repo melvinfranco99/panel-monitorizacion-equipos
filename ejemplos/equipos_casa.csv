@@ -1,0 +1,6 @@
+nombre,ip,tipo,puerto,ubicacion,descripcion
+Router de casa,192.168.1.1,router,,Salón,Cambia la IP por la de tu router (ip route / ipconfig)
+DNS de Google,8.8.8.8,servidor,,Internet,Sirve para saber si hay salida a Internet
+DNS de Cloudflare,1.1.1.1,servidor,,Internet,
+Web de Google (HTTPS),www.google.com,servidor,443,Internet,Comprobación TCP al puerto 443
+Mi PC,127.0.0.1,ordenador,,Habitación,El propio equipo (siempre responde)
