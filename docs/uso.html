@@ -110,6 +110,15 @@ docker compose stop servidor-web      # el servidor web (comprobado por TCP 80) 
 
 docker compose down -v                # borrarlo todo al acabar</pre>
     <div class="caja aviso"><p>Si <code>docker compose</code> no existe, instala el plugin: en Arch <code>sudo pacman -S docker-compose</code>; en Debian/Ubuntu <code>sudo apt install docker-compose-plugin</code>; en Windows viene con Docker Desktop.</p></div>
+    <p>¿No tienes <code>docker compose</code>? El mismo laboratorio con solo <code>docker</code>: <code>bash lab/lab_sin_compose.sh arrancar</code> (y <code>borrar</code> al acabar).</p>
+    <figure class="captura">
+      <img src="img/lab_caida.png" alt="Panel del laboratorio con PC Contabilidad y un equipo inexistente caídos">
+      <figcaption>Figura 3. Laboratorio real: tras <code>docker stop lab-pc-contabilidad</code>, el PC aparece caído a los 21 s (2 ciclos de 10 s). El servidor web se vigila por TCP 80.</figcaption>
+    </figure>
+    <figure class="captura">
+      <img src="img/lab_incidencias.png" alt="Incidencias: PC Contabilidad caído a las 00:00:01 y recuperado a las 00:00:12">
+      <figcaption>Figura 4. Incidencias registradas: caída y recuperación con fecha y hora.</figcaption>
+    </figure>
     <p>Grabar este experimento (apagar, ver la caída, encender, ver la recuperación) con capturas o vídeo es una <strong>evidencia perfecta para la memoria y la defensa</strong>.</p>
 
     <h3>Opción C · Máquinas virtuales</h3>

@@ -45,6 +45,8 @@ cd lab && docker compose up -d --build            # http://localhost:5000  (admi
 docker compose stop pc-contabilidad               # simula una caída
 ```
 
+Sin `docker compose`: `bash lab/lab_sin_compose.sh arrancar` (y `borrar` al acabar).
+
 **Producción** (Debian/Ubuntu/Raspberry Pi): `sudo bash deploy/instalar_linux.sh` y nginx con `deploy/nginx-netpanel.conf`.
 
 ## Pruebas

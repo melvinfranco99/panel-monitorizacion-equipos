@@ -258,16 +258,18 @@ La ficha de cada equipo incluye la disponibilidad en tres periodos, una barra po
 
 **Laboratorio controlado.** Con Docker Compose se ha creado una red privada `172.30.0.0/24` con seis contenedores que simulan un router, un servidor web nginx, un servidor de ficheros, dos ordenadores y una impresora, además de una dirección sin equipo. Se han realizado los siguientes casos de prueba:
 
-**Tabla 6. Casos de prueba en el laboratorio.** [Rellena con tus resultados reales.]
+**Tabla 6. Casos de prueba en el laboratorio** (intervalo de 10 s, 2 fallos para marcar caído). [Resultados de una ejecución de referencia; repite las pruebas tú y pon tus tiempos.]
 
 | Caso | Acción | Resultado esperado | Resultado obtenido |
 |---|---|---|---|
-| CP1 | Arranque | Todos los equipos existentes «Responde»; el inexistente «Caído» | [ ] |
-| CP2 | Detener un PC | Pasa a «Caído» tras 2 ciclos (~20 s) y se registra la incidencia | [ ] |
-| CP3 | Arrancar el PC | Pasa a «Responde» y se registra la recuperación | [ ] |
-| CP4 | Detener el servidor web (TCP 80) | Pasa a «Caído» | [ ] |
-| CP5 | Introducir una IP no válida | El formulario la rechaza | [ ] |
-| CP6 | Intentar añadir equipo sin sesión | Redirige al login | [ ] |
+| CP1 | Arranque | Equipos existentes «Responde»; el inexistente (172.30.0.99) «Caído» | Correcto: 7 responden (latencia 0,03–1 ms en la red Docker; 11 ms a 8.8.8.8) y el inexistente aparece caído |
+| CP2 | `docker stop lab-pc-contabilidad` | «Caído» tras 2 ciclos y se registra la incidencia | Correcto: detectado en 21 s |
+| CP3 | `docker start lab-pc-contabilidad` | «Responde» y se registra la recuperación | Correcto: recuperado en 7 s (basta una respuesta) |
+| CP4 | Detener el servidor web (TCP 80) | «Caído» | Correcto: detectado en 21 s |
+| CP5 | Alta con IP `1.1.1.1; reboot` | Se rechaza | Correcto: «La dirección no es una IP ni un nombre de host válido» |
+| CP6 | Acceder a `/equipos/nuevo` sin sesión | Redirige al login | Correcto: HTTP 302 a `/login`; un POST sin token CSRF devuelve HTTP 400 |
+
+Durante estas pruebas se detectó un fallo: dentro del contenedor la hora del historial era UTC, una hora menos que la hora local. Se corrigió instalando el paquete `tzdata` en la imagen y definiendo la variable `TZ=Europe/Madrid`.
 
 [Figura 10. Secuencia de capturas: equipo detenido → caído → arrancado → recuperado.]
 
