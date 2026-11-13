@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desde cero</title>
+<meta name="description" content="Ruta completa, paso a paso y justificada, para hacer el Proyecto Intermodular NetPanel desde cero: entorno, funcionamiento, construcción por versiones, método, plantilla de la memoria y defensa.">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%2316a34a'/></svg>">
+<style>
+  .mapa { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); margin: 1.4em 0; }
+  .mapa a { display: block; text-decoration: none; color: var(--texto); background: var(--superficie);
+            border: 1px solid var(--borde); border-radius: var(--radio); padding: 12px 14px; }
+  .mapa a:hover { border-color: var(--acento); }
+  .mapa b { display: block; color: var(--acento); font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+  .mapa span { font-weight: 600; }
+  .mapa small { display: block; color: var(--suave); font-size: .85rem; line-height: 1.4; margin-top: 2px; }
+  .fase { display: inline-block; background: var(--acento); color: #fff; border-radius: 999px; font-size: .75rem;
+          font-weight: 700; padding: 2px 10px; letter-spacing: .05em; text-transform: uppercase; vertical-align: middle; }
+  .version { border-left: 4px solid var(--acento-2); }
+  .version h3 { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .version h3 code { font-size: .8rem; }
+  .meta { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 4px 12px; font-size: .95rem; margin: .6em 0; }
+  .meta dt { font-weight: 700; color: var(--suave); font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; padding-top: 3px; }
+  .meta dd { margin: 0; }
+  @media (max-width: 600px) { .meta { grid-template-columns: minmax(0, 1fr); } .meta dt { padding-top: 8px; } }
+  .descarga { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .descarga .btn { font-size: 1rem; }
+</style>
+</head>
+<body>
+<header class="cab"><div class="cab-dentro">
+  <a class="logo" href="index.html"><i></i> NetPanel</a>
+  <nav>
+    <a href="index.html">Proyecto</a>
+    <a class="activa" href="desde-cero.html">Desde cero</a>
+    <a href="uso.html">Usar la app</a>
+    <a href="codigo.html">El código</a>
+    <a href="tfg.html">Guía del proyecto</a>
+    <a href="defensa.html">Defensa</a>
+    <a href="https://github.com/melvinfranco99/panel-monitorizacion-equipos">GitHub</a>
+    <button class="tema" aria-label="Cambiar tema">◐</button>
+  </nav>
+</div></header>
+
+<main class="contenido con-indice">
+  <aside class="indice">
+    <a href="#mapa">Mapa de la ruta</a>
+    <a href="#f0">0 · Qué te piden</a>
+    <a href="#f1">1 · Preparar tu equipo</a>
+    <a href="#f2">2 · Cómo funciona</a>
+    <a href="#f3">3 · Construirlo por versiones</a>
+    <a href="#f4">4 · Razonar y justificar</a>
+    <a href="#f5">5 · Probar y medir</a>
+    <a href="#f6">6 · La plantilla y la memoria</a>
+    <a href="#f7">7 · Seguimiento del tutor</a>
+    <a href="#f8">8 · Presentación y defensa</a>
+    <a href="#final">Checklist por fases</a>
+  </aside>
+  <div>
+  <p class="eyebrow">Ruta completa · de cero a la defensa</p>
+  <h1>Cómo hacerlo todo desde cero</h1>
+  <p class="lead">El orden de trabajo, de principio a fin: qué haces, en qué orden, <strong>por qué</strong> lo haces así y qué tienes que guardar como prueba. Si sigues esta página, cada cosa del proyecto tendrá un motivo que podrás explicar.</p>
+
+  <div class="caja destacada">
+    <p><strong>La idea principal:</strong> el tribunal no solo valora que la aplicación funcione. Valora que <strong>sepas por qué es así</strong>. Por eso, en cada paso apunta tres cosas en tu diario: <em>qué decidí</em>, <em>qué otras opciones había</em> y <em>cómo comprobé que funcionaba</em>. Con esas notas escribes la memoria casi sola.</p>
+  </div>
+
+  <h2 id="mapa">Mapa de la ruta</h2>
+  <div class="mapa">
+    <a href="#f0"><b>Fase 0 · 1 día</b><span>Entender qué te piden</span><small>Guía, modalidad, nota, plazos. Avisar al tutor.</small></a>
+    <a href="#f1"><b>Fase 1 · 1 tarde</b><span>Preparar tu equipo</span><small>Python, Git, VS Code, GitHub. Arrancar la demo.</small></a>
+    <a href="#f2"><b>Fase 2 · 1 semana</b><span>Entender cómo funciona</span><small>El ciclo, los estados, la base de datos, la fórmula.</small></a>
+    <a href="#f3"><b>Fase 3 · 3–4 semanas</b><span>Construirlo por versiones</span><small>De un script de ping a la app completa, en 8 pasos.</small></a>
+    <a href="#f4"><b>Durante todo</b><span>Razonar y justificar</span><small>Diario, registro de decisiones, hipótesis.</small></a>
+    <a href="#f5"><b>Fase 5 · 1–2 semanas</b><span>Probar y medir</span><small>Laboratorio, casos de prueba, capturas.</small></a>
+    <a href="#f6"><b>Fase 6 · 3 semanas</b><span>Plantilla y memoria</span><small>Formato obligatorio, 10 apartados, PDF.</small></a>
+    <a href="#f8"><b>Fase 8 · 2 semanas</b><span>Presentación y defensa</span><small>Diapositivas, demo, ensayos, preguntas.</small></a>
+  </div>
+  <p>La <a href="#f7">fase 7 (seguimiento del tutor)</a> no va al final: dura todo el proyecto y vale el <strong>25 % de la nota</strong>.</p>
+
+  <!-- ===================================================== -->
+  <h2 id="f0"><span class="fase">Fase 0</span> Entender qué te piden</h2>
+  <p>Antes de escribir código hay que saber con qué te van a evaluar. Todo sale de la guía oficial del módulo:</p>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Qué dice la guía</th><th>Qué significa para ti</th></tr></thead>
+    <tbody>
+      <tr><td>Modalidad a) <em>investigación experimental</em></td><td>Haces una memoria de <strong>15–20 páginas</strong> (sin contar anexos) y una <strong>defensa presencial</strong> de 20 min + 10 min de preguntas.</td></tr>
+      <tr><td>Avisar al tutor de la modalidad <strong>antes del 20 de noviembre</strong></td><td>Hazlo ya. Tienes un mensaje de ejemplo en la <a href="tfg.html#ya">Guía del proyecto</a>.</td></tr>
+      <tr><td>Identificar una necesidad, plantear una solución y <strong>justificar las decisiones</strong></td><td>Por eso existe la <a href="#f4">fase 4</a>: cada decisión necesita un motivo escrito.</td></tr>
+      <tr><td>Significativo, inclusivo, integrador, proporcionado y observable</td><td>Debe usar lo que aprendiste en varios módulos (redes, sistemas, programación, BD, seguridad), poder probarse y dejar algo que se pueda evaluar: app, laboratorio, memoria y web.</td></tr>
+      <tr><td>Fuentes variadas y contrastadas, sin plagio</td><td>Lleva una lista de fuentes desde el primer día (<a href="#fuentes">más abajo</a>).</td></tr>
+      <tr><td>Nota: 40 % idea y desarrollo · 25 % seguimiento · 35 % memoria y defensa</td><td>Hay que aprobar la memoria (≥ 5) para poder defender, y aprobar las dos partes.</td></tr>
+    </tbody>
+  </table></div>
+  <h3>El planteamiento en una frase (apréndetelo)</h3>
+  <div class="caja"><p><strong>Problema:</strong> en una red pequeña nadie sabe que un equipo se ha caído hasta que alguien se queja. <strong>Solución:</strong> una web que comprueba cada pocos segundos si cada equipo responde (ping o puerto TCP), muestra su estado e IP, guarda el historial y calcula su disponibilidad. <strong>Comprobación:</strong> un laboratorio con Docker en el que apago equipos y mido cuánto tarda en detectarlo.</p></div>
+
+  <!-- ===================================================== -->
+  <h2 id="f1"><span class="fase">Fase 1</span> Preparar tu equipo</h2>
+  <p>Instala estas cuatro herramientas. Son gratis y son las que usa cualquier desarrollador:</p>
+  <div class="rejilla">
+    <div class="caja"><h3>Python 3.10 o superior</h3><p>El lenguaje de la app. En Windows marca <em>«Add python.exe to PATH»</em> al instalar.</p></div>
+    <div class="caja"><h3>Git</h3><p>Guarda el historial de cambios. Cada versión que hagas es un <em>commit</em>, y esos commits sirven como evidencia.</p></div>
+    <div class="caja"><h3>VS Code</h3><p>Editor de código, con la extensión «Python».</p></div>
+    <div class="caja"><h3>Cuenta de GitHub</h3><p>Para publicar el código y la web. Ya tienes el repositorio.</p></div>
+  </div>
+  <div class="pestanas" role="tablist">
+    <button role="tab" aria-selected="true" data-panel="so-win">Windows</button>
+    <button role="tab" aria-selected="false" data-panel="so-lin">Linux / macOS</button>
+  </div>
+  <div class="panel-pestana" id="so-win">
+<pre>git clone https://github.com/melvinfranco99/panel-monitorizacion-equipos.git
+cd panel-monitorizacion-equipos
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements-dev.txt
+python herramientas.py demo      # crea datos de ejemplo
+python run.py                    # abre http://127.0.0.1:5000  (admin / admin)
+python -m pytest                 # deben pasar los 22 tests</pre>
+  </div>
+  <div class="panel-pestana" id="so-lin" hidden>
+<pre>git clone https://github.com/melvinfranco99/panel-monitorizacion-equipos.git
+cd panel-monitorizacion-equipos
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt
+python herramientas.py demo
+python run.py                    # http://127.0.0.1:5000  (admin / admin)
+python -m pytest</pre>
+  </div>
+  <div class="caja aviso"><p><strong>¿Por qué un entorno virtual (<code>.venv</code>)?</strong> Así las librerías del proyecto no se mezclan con las del sistema y cualquiera puede reproducirlo con <code>requirements.txt</code>. Es una pregunta típica del tribunal.</p></div>
+  <p><strong>Evidencia que guardas:</strong> una captura del panel funcionando en <em>tu</em> equipo y la salida de los tests.</p>
+
+  <!-- ===================================================== -->
+  <h2 id="f2"><span class="fase">Fase 2</span> Entender cómo funciona</h2>
+  <p>La app tiene dos partes que trabajan a la vez y comparten una base de datos:</p>
+  <div class="diagrama">
+    <svg viewBox="0 0 900 300" role="img" aria-label="El monitor comprueba los equipos y escribe en SQLite; la web lee de SQLite y lo muestra en el navegador">
+      <defs><marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
+      <rect class="na" x="20" y="30" width="250" height="100" rx="12"/>
+      <text x="40" y="62">1 · El monitor (hilo)</text>
+      <text class="t2" x="40" y="86">Cada 30 s recorre los equipos</text>
+      <text class="t2" x="40" y="106">monitor.py + comprobador.py</text>
+      <rect class="n" x="20" y="180" width="250" height="100" rx="12"/>
+      <text x="40" y="212">Equipos de la red</text>
+      <text class="t2" x="40" y="236">router, servidores, PCs…</text>
+      <text class="t2" x="40" y="256">ping (ICMP) o puerto TCP</text>
+      <path class="f fa" d="M120,130 V178"/>
+      <path class="f" d="M170,178 V132"/>
+      <text class="t2" x="180" y="160">¿responde? ms</text>
+      <rect class="na" x="350" y="105" width="200" height="100" rx="12"/>
+      <text x="370" y="137">SQLite</text>
+      <text class="t2" x="370" y="161">equipos · comprobaciones</text>
+      <text class="t2" x="370" y="181">eventos</text>
+      <path class="f fa" d="M270,80 C310,80 320,130 348,135"/>
+      <text class="t2" x="285" y="70">escribe</text>
+      <rect class="na" x="630" y="30" width="250" height="100" rx="12"/>
+      <text x="650" y="62">2 · La web (Flask)</text>
+      <text class="t2" x="650" y="86">rutas.py + plantillas</text>
+      <text class="t2" x="650" y="106">calcula la disponibilidad</text>
+      <path class="f fa" d="M550,135 C590,130 600,80 628,80"/>
+      <text class="t2" x="565" y="70">lee</text>
+      <rect class="n" x="630" y="180" width="250" height="100" rx="12"/>
+      <text x="650" y="212">Navegador</text>
+      <text class="t2" x="650" y="236">pide /api/estado cada 5 s</text>
+      <text class="t2" x="650" y="256">y repinta las tarjetas</text>
+      <path class="f" d="M730,178 V132"/>
+      <path class="f fa" d="M780,132 V178"/>
+    </svg>
+  </div>
+  <h3>Lo que hace el monitor en cada vuelta</h3>
+  <ol class="pasos">
+    <li>Lee de la base de datos los equipos activos.</li>
+    <li>Los comprueba <strong>en paralelo</strong> (<code>ThreadPoolExecutor</code>) para no esperar uno tras otro. Si un equipo tiene puerto, abre una conexión TCP; si no, hace <code>ping</code>.</li>
+    <li>Guarda cada resultado en la tabla <code>comprobaciones</code> (fecha, responde sí/no, latencia).</li>
+    <li>Decide el nuevo estado con la regla de los <strong>2 fallos seguidos</strong> y, si cambia, lo apunta en <code>eventos</code> y puede avisar por Telegram.</li>
+    <li>Borra el historial con más de 30 días y espera al siguiente ciclo.</li>
+  </ol>
+  <h3>La regla de estados (el corazón del proyecto)</h3>
+<pre>def calcular_estado(estado_actual, fallos_consecutivos, responde, fallos_para_caido):
+    if responde:
+        return "up", 0                      # responde → «Responde», contador a 0
+    fallos = fallos_consecutivos + 1
+    if fallos >= fallos_para_caido:
+        return "down", fallos               # 2 fallos seguidos → «Caído»
+    return estado_actual, fallos            # 1 fallo → aún no lo marca caído</pre>
+  <p><strong>Por qué 2 y no 1:</strong> un solo ping puede perderse sin que el equipo esté caído (red saturada, Wi-Fi). Con 2 seguidos casi no hay falsas alarmas, y la caída se detecta en menos de un minuto. Es un <em>compromiso entre rapidez y falsos positivos</em>, y se puede cambiar con <code>MONITOR_FALLOS_PARA_CAIDO</code>.</p>
+  <h3>La fórmula de la disponibilidad</h3>
+  <div class="caja"><p><strong>Disponibilidad (%) = comprobaciones con respuesta ÷ comprobaciones totales × 100</strong></p>
+  <p>En SQL: <code>SELECT AVG(responde) * 100 FROM comprobaciones WHERE equipo_id = ? AND fecha &gt;= ?</code>. Como <code>responde</code> vale 1 o 0, la media ya es la proporción.</p></div>
+  <p>Para ver fichero a fichero cómo está hecho, tienes <a href="codigo.html">El código explicado</a>. Léelo con el código abierto al lado.</p>
+
+  <!-- ===================================================== -->
+  <h2 id="f3"><span class="fase">Fase 3</span> Construirlo por versiones</h2>
+  <p>La mejor forma de entender la app y poder defenderla es <strong>rehacerla tú por partes</strong> en una carpeta aparte (por ejemplo <code>mi-version/</code>), comparando con el código del repositorio. Cada versión añade una sola idea, funciona por sí misma y acaba en un <em>commit</em>. Esto además es tu <strong>metodología</strong>: desarrollo <strong>iterativo e incremental</strong>, y así lo puedes contar en la memoria.</p>
+
+  <div class="caja version">
+    <h3>v0 · Un script que hace ping <code>git commit -m "v0: ping a una IP"</code></h3>
+    <dl class="meta">
+      <dt>Objetivo</dt><dd>Saber desde Python si una IP responde.</dd>
+      <dt>Aprendes</dt><dd>ICMP, <code>subprocess</code>, códigos de salida, por qué los argumentos van en lista (sin <code>shell=True</code>).</dd>
+      <dt>Compruebas</dt><dd>Con tu router da <code>True</code>; con <code>192.168.1.254</code> (no existe) da <code>False</code>.</dd>
+    </dl>
+<pre>import subprocess, platform
+def hacer_ping(ip):
+    n = "-n" if platform.system() == "Windows" else "-c"
+    r = subprocess.run(["ping", n, "1", ip], capture_output=True)
+    return r.returncode == 0
+print(hacer_ping("192.168.1.1"))</pre>
+  </div>
+
+  <div class="caja version">
+    <h3>v1 · Varios equipos y un bucle <code>v1</code></h3>
+    <dl class="meta">
+      <dt>Objetivo</dt><dd>Comprobar una lista de equipos cada X segundos e imprimir su estado.</dd>
+      <dt>Aprendes</dt><dd>Listas y diccionarios, <code>time.sleep</code>, latencia con <code>time.perf_counter()</code>.</dd>
+      <dt>Compruebas</dt><dd>Desconecta un equipo (o el cable) y mira que cambia.</dd>
+      <dt>Problema que descubres</dt><dd>Con 20 equipos que no responden, una vuelta tarda 20 × timeout. <strong>Esto justifica la v6</strong> (comprobación en paralelo).</dd>
+    </dl>
+  </div>
+
+  <div class="caja version">
+    <h3>v2 · Guardar en SQLite <code>v2</code></h3>
+    <dl class="meta">
+      <dt>Objetivo</dt><dd>Que los resultados no se pierdan al cerrar el programa.</dd>
+      <dt>Aprendes</dt><dd>Tablas, clave primaria y foránea, <code>INSERT</code>/<code>SELECT</code>, consultas parametrizadas con <code>?</code> (contra la inyección SQL).</dd>
+      <dt>Compruebas</dt><dd>Abre la BD con «DB Browser for SQLite» y mira las filas.</dd>
+    </dl>
+<pre>CREATE TABLE equipos (id INTEGER PRIMARY KEY, nombre TEXT, ip TEXT UNIQUE, estado TEXT);
+CREATE TABLE comprobaciones (id INTEGER PRIMARY KEY,
+  equipo_id INTEGER REFERENCES equipos(id) ON DELETE CASCADE,
+  fecha TEXT, responde INTEGER, latencia_ms REAL);</pre>
+  </div>
+
+  <div class="caja version">
+    <h3>v3 · Una web con Flask <code>v3</code></h3>
+    <dl class="meta">
+      <dt>Objetivo</dt><dd>Ver los equipos en el navegador en lugar de en la terminal.</dd>
+      <dt>Aprendes</dt><dd>HTTP (GET/POST, códigos 200/302/404), rutas, plantillas Jinja2, el escape automático de HTML (contra XSS).</dd>
+      <dt>Compruebas</dt><dd><code>http://127.0.0.1:5000</code> muestra la tabla leída de SQLite.</dd>
+    </dl>
+<pre>from flask import Flask, render_template
+app = Flask(__name__)
+@app.route("/")
+def inicio():
+    equipos = conectar().execute("SELECT * FROM equipos").fetchall()
+    return render_template("inicio.html", equipos=equipos)</pre>
+  </div>
+
+  <div class="caja version">
+    <h3>v4 · Monitor en segundo plano + estados <code>v4</code></h3>
+    <dl class="meta">
+      <dt>Objetivo</dt><dd>Que la web y las comprobaciones funcionen a la vez, y no avisar por un solo fallo.</dd>
+      <dt>Aprendes</dt><dd>Hilos (<code>threading</code>), por qué la web no puede esperar al ping, la máquina de estados y la tabla <code>eventos</code>.</dd>
+      <dt>Compruebas</dt><dd>Apagas un equipo: tras 2 ciclos sale «Caído» y aparece en Incidencias.</dd>
+    </dl>
+  </div>
+
+  <div class="caja version">
+    <h3>v5 · Historial, disponibilidad y gráfica <code>v5</code></h3>
+    <dl class="meta">
+      <dt>Objetivo</dt><dd>Calcular el % de disponibilidad de 24 h y 7 días y dibujar la latencia.</dd>
+      <dt>Aprendes</dt><dd><code>AVG</code>, <code>GROUP BY</code>, índices (<code>(equipo_id, fecha)</code>), JSON y <code>fetch</code> en JavaScript, SVG.</dd>
+      <dt>Compruebas</dt><dd>Con <code>herramientas.py demo</code> el NAS sale con menos del 100 % por la caída simulada.</dd>
+    </dl>
+  </div>
+
+  <div class="caja version">
+    <h3>v6 · Rapidez y robustez <code>v6</code></h3>
+    <dl class="meta">
+      <dt>Objetivo</dt><dd>Resolver el problema de la v1 y comprobar servicios con ping bloqueado.</dd>
+      <dt>Aprendes</dt><dd><code>ThreadPoolExecutor</code>, comprobación TCP con <code>socket</code>, por qué un <code>Lock</code> evita dos ciclos a la vez.</dd>
+      <dt>Compruebas</dt><dd><strong>Mide</strong> el tiempo de un ciclo antes y después con 10 equipos caídos. Ese dato va en la memoria.</dd>
+    </dl>
+  </div>
+
+  <div class="caja version">
+    <h3>v7 · Seguridad, tests y despliegue <code>v7</code></h3>
+    <dl class="meta">
+      <dt>Objetivo</dt><dd>Que solo el administrador pueda modificar equipos y que se pueda instalar de verdad.</dd>
+      <dt>Aprendes</dt><dd>Hash de contraseñas, sesiones, CSRF, validación de IP con <code>ipaddress</code>, <code>pytest</code>, Docker, systemd y nginx.</dd>
+      <dt>Compruebas</dt><dd>22 tests en verde; sin sesión, <code>/equipos/nuevo</code> te manda al login.</dd>
+    </dl>
+  </div>
+  <div class="caja aviso"><p>No hace falta que tu versión quede idéntica. Lo que importa es que <strong>cada parte la hayas escrito o modificado tú</strong> y sepas por qué está ahí. Además, añade <strong>una mejora propia</strong> (ideas en la <a href="tfg.html#personal">Guía del proyecto</a>): es tu aportación original, y la guía pide mencionarla en la defensa.</p></div>
+
+  <!-- ===================================================== -->
+  <h2 id="f4"><span class="fase">Fase 4</span> Hacer las cosas razonadas y justificadas</h2>
+  <p>Esta fase dura todo el proyecto. Un proyecto «justificado» sigue siempre la misma cadena, y cada eslabón deja algo escrito:</p>
+  <div class="cronograma">
+    <div class="fila"><span class="fecha">1. Problema</span><div>¿Qué pasa y a quién le afecta? → <em>Justificación</em> de la memoria.</div></div>
+    <div class="fila"><span class="fecha">2. Investigación</span><div>¿Qué se sabe y qué herramientas existen? → <em>Introducción</em> (con citas).</div></div>
+    <div class="fila"><span class="fecha">3. Objetivos</span><div>¿Qué quiero conseguir, medible? → <em>Objetivos</em> (en infinitivo).</div></div>
+    <div class="fila"><span class="fecha">4. Requisitos</span><div>¿Qué tiene que hacer la app y con qué límites? → tabla RF/RNF.</div></div>
+    <div class="fila"><span class="fecha">5. Decisiones</span><div>Para cada elección: alternativas, criterio y elección → tabla de decisiones.</div></div>
+    <div class="fila"><span class="fecha">6. Prueba</span><div>¿Cómo demuestro que funciona? → casos de prueba con resultado medido.</div></div>
+    <div class="fila"><span class="fecha">7. Conclusión</span><div>¿Se cumplió cada objetivo? ¿Qué falló? → <em>Conclusiones</em>.</div></div>
+  </div>
+
+  <h3>Herramienta 1 · El diario de proyecto</h3>
+  <p>Un fichero <code>DIARIO.md</code> en tu repositorio. Escribe una entrada cada día que trabajes, aunque sean 5 líneas. Te sirve para la memoria, para las entregas al tutor y para responder «¿qué dificultades tuviste?».</p>
+<pre>## 2026-11-20 · v1 (bucle de varios equipos)   ⏱ 2 h
+Hecho: bucle con 5 equipos cada 10 s.
+Problema: con 3 equipos apagados la vuelta tarda 3 s (1 s de timeout cada uno).
+Causa: se comprueban uno detrás de otro.
+Solución / pendiente: comprobarlos en paralelo (lo haré en v6).
+Fuente consultada: docs.python.org/3/library/concurrent.futures.html
+Evidencia: captura 2026-11-20_bucle.png · commit a1b2c3d</pre>
+
+  <h3>Herramienta 2 · El registro de decisiones</h3>
+  <p>Cada vez que elijas entre dos opciones, rellena esta ficha. Es lo que más se nota en un proyecto razonado:</p>
+<pre>DECISIÓN: Base de datos
+Contexto: necesito guardar equipos e historial; red pequeña; un solo servidor.
+Alternativas: SQLite · MySQL/MariaDB · ficheros CSV
+Criterios: facilidad de instalación, fiabilidad, consultas SQL, recursos.
+Elección: SQLite.
+Motivo: no necesita servidor, es un único fichero fácil de copiar, admite SQL
+        completo y para unos pocos cientos de equipos sobra.
+Consecuencia / límite: si hubiera muchos usuarios escribiendo a la vez,
+        migraría a PostgreSQL.</pre>
+  <p>Las decisiones de NetPanel, ya razonadas (cópialas a tu manera en la memoria, apartado 4.3 de la plantilla):</p>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Decisión</th><th>Alternativas</th><th>Por qué esta</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Python + Flask</strong></td><td>Django, PHP, Node.js</td><td>Flask es pequeño y se entiende entero; Django trae mucho que no se usa (ORM, panel admin). Python ya se ve en el ciclo.</td></tr>
+      <tr><td><strong>SQLite</strong></td><td>MySQL, PostgreSQL, CSV</td><td>Sin servidor, un fichero, SQL completo. Con el modo WAL se puede leer mientras se escribe.</td></tr>
+      <tr><td><strong>Ping (ICMP) + TCP</strong></td><td>SNMP, agentes instalados</td><td>No hay que instalar ni configurar nada en los equipos vigilados. TCP sirve cuando el ping está bloqueado o se quiere comprobar un servicio.</td></tr>
+      <tr><td><strong>2 fallos seguidos = caído</strong></td><td>1 fallo, 3 fallos</td><td>1 da falsas alarmas; 3 tarda más en avisar. 2 detecta en menos de 1 minuto con intervalo de 30 s (medido: 21 s con 10 s).</td></tr>
+      <tr><td><strong>Hilo + ThreadPoolExecutor</strong></td><td>cron, Celery, asyncio</td><td>Sin dependencias externas ni servicios extra; el paralelismo con hilos va bien porque la espera es de red, no de CPU.</td></tr>
+      <tr><td><strong>Gráfica en SVG propio</strong></td><td>Chart.js desde un CDN</td><td>Funciona sin Internet (redes aisladas de empresa) y no carga código de terceros.</td></tr>
+      <tr><td><strong>gunicorn con 1 proceso y 8 hilos</strong></td><td>Varios procesos</td><td>Con varios procesos habría varios monitores comprobando lo mismo a la vez.</td></tr>
+      <tr><td><strong>Docker para el laboratorio</strong></td><td>Máquinas virtuales, equipos físicos</td><td>8 «equipos» en segundos con pocos recursos, y se puede repetir igual las veces que haga falta.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Herramienta 3 · Hipótesis que puedes medir</h3>
+  <p>Tu modalidad es <em>investigación experimental</em>, así que plantea hipótesis y compruébalas con datos:</p>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Hipótesis</th><th>Cómo la mides</th><th>Resultado de referencia</th></tr></thead>
+    <tbody>
+      <tr><td>H1. Detecta la caída de un equipo en menos de 1 minuto.</td><td>Hora del <code>docker stop</code> frente a hora del evento en Incidencias.</td><td>21 s (intervalo 10 s, 2 fallos)</td></tr>
+      <tr><td>H2. Detecta la recuperación en menos de un ciclo.</td><td>Hora del <code>docker start</code> frente a hora del evento.</td><td>7 s</td></tr>
+      <tr><td>H3. Comprobar en paralelo reduce el tiempo de ciclo.</td><td>Duración del ciclo con 10 equipos caídos, en serie y en paralelo.</td><td>Mídelo tú (v1 frente a v6)</td></tr>
+      <tr><td>H4. La disponibilidad calculada coincide con la real.</td><td>Apagar un equipo un tiempo conocido y comparar el % con el cálculo manual.</td><td>Mídelo tú</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="fuentes">Herramienta 4 · La lista de fuentes</h3>
+  <p>Cada vez que algo te sirva, apúntalo en el momento en formato APA. Fuentes fiables para este tema: RFC 792 (ICMP), documentación oficial de Python, Flask y SQLite, OWASP Top 10, la documentación de Zabbix y Nagios (para comparar) e INCIBE (seguridad para pymes). <strong>Contrasta</strong> lo que leas en blogs con una fuente oficial.</p>
+
+  <!-- ===================================================== -->
+  <h2 id="f5"><span class="fase">Fase 5</span> Probar y medir</h2>
+  <ol class="pasos">
+    <li><strong>Pruebas automáticas:</strong> <code>python -m pytest</code>. Explica qué prueba cada grupo de tests (regla de estados, validación de IP, login, CSRF, API).</li>
+    <li><strong>Laboratorio controlado:</strong> monta la red Docker con <code>bash lab/lab_sin_compose.sh arrancar</code> (pasos en <a href="uso.html#entornos">Usar la app</a>).</li>
+    <li><strong>Casos de prueba:</strong> para cada uno escribe <em>acción → resultado esperado → resultado obtenido</em>. Por ejemplo, CP2: <code>docker stop lab-pc-contabilidad</code> → «Caído» en menos de 1 minuto → «Caído» a los 21 s.</li>
+    <li><strong>Prueba real:</strong> en tu casa, con el router, tu móvil y un DNS público. Comprueba qué pasa cuando apagas el Wi-Fi del móvil.</li>
+    <li><strong>Evidencias:</strong> capturas con fecha en el nombre, un vídeo corto de una caída y su recuperación, y la salida de los tests. Todo va a anexos y a la defensa.</li>
+  </ol>
+  <figure class="captura"><img src="img/lab_caida.png" alt="Panel del laboratorio con el PC de Contabilidad caído"><figcaption>Ejemplo de evidencia: el laboratorio con un equipo detenido a propósito y detectado como caído.</figcaption></figure>
+
+  <!-- ===================================================== -->
+  <h2 id="f6"><span class="fase">Fase 6</span> La plantilla y la memoria</h2>
+  <div class="caja peligro"><p><strong>La plantilla oficial es la que te da el campus</strong> (módulo de Proyecto). Es obligatoria, sobre todo la portada. Si aún no la tienes, empieza con la plantilla de abajo, que ya cumple el formato de la guía, y pasa el texto a la oficial cuando la tengas.</p></div>
+  <div class="caja descarga">
+    <a class="btn" href="descargas/plantilla_memoria_netpanel.docx" download>⬇ Descargar plantilla (.docx)</a>
+    <span>Word / LibreOffice / Google Docs. Lleva los 10 apartados, los subapartados de NetPanel con instrucciones en gris, índice automático, leyendas numeradas y la tabla de pruebas de ejemplo.</span>
+  </div>
+
+  <h3>Formato obligatorio (ya aplicado en la plantilla)</h3>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Regla de la guía</th><th>Cómo se hace en Word</th><th>En LibreOffice Writer</th></tr></thead>
+    <tbody>
+      <tr><td>Calibri 11 o Times New Roman 12</td><td>Inicio → Estilos → clic derecho en «Normal» → Modificar</td><td>F11 → «Estilo de párrafo predeterminado» → Editar</td></tr>
+      <tr><td>Interlineado 1,5 y texto justificado</td><td>En el mismo estilo «Normal» → Formato → Párrafo</td><td>En el mismo estilo → Sangrías y espaciado / Alineación</td></tr>
+      <tr><td>Márgenes: sup., inf. y dcho. 2 cm; izq. 3 cm</td><td>Disposición → Márgenes → Márgenes personalizados</td><td>Formato → Estilo de página → Página</td></tr>
+      <tr><td>Número de página abajo a la derecha (sin número en la portada)</td><td>Insertar → Número de página → Final de página → derecha; marca «Primera página diferente»</td><td>Insertar → Pie → Campo → Número de página; la portada con estilo «Primera página»</td></tr>
+      <tr><td>Toda figura y tabla con leyenda</td><td>Referencias → Insertar título (numeración automática)</td><td>Clic derecho en la imagen → Insertar leyenda</td></tr>
+      <tr><td>Índice con páginas</td><td>Referencias → Tabla de contenido (usa los estilos Título 1/2)</td><td>Insertar → Índice → Índice general</td></tr>
+      <tr><td>Entrega en PDF</td><td>Archivo → Guardar como → PDF</td><td>Archivo → Exportar como PDF</td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Consejo:</strong> no pongas nunca el formato a mano en cada párrafo. Usa <strong>estilos</strong> («Normal», «Título 1», «Título 2»). Así el índice se genera solo y todo queda uniforme.</p>
+
+  <h3>Cómo escribir la memoria, paso a paso</h3>
+  <ol class="pasos">
+    <li><strong>Copia el esqueleto</strong> de la plantilla y pon tu nombre, tu tutor y tu ciclo en la portada.</li>
+    <li><strong>Empieza por el Desarrollo</strong> (apartado 4), porque es lo que mejor conoces: usa el diario, el registro de decisiones y los casos de prueba.</li>
+    <li>Después escribe los <strong>Objetivos</strong> y comprueba que el Desarrollo responde a cada uno.</li>
+    <li>Luego la <strong>Introducción</strong> (con citas) y la <strong>Justificación</strong>.</li>
+    <li>Escribe las <strong>Conclusiones</strong> objetivo por objetivo: «El objetivo 2 se cumplió: la caída se detectó en 21 s (Tabla 3)».</li>
+    <li>El <strong>Resumen</strong>, el último: es un resumen de todo lo anterior.</li>
+    <li>Actualiza el índice, cuenta las páginas (15–20 sin anexos), pasa el corrector y <strong>léela en voz alta</strong>.</li>
+    <li>Mándasela al tutor <strong>antes</strong> de la entrega final y exporta a PDF.</li>
+  </ol>
+  <p>Ya tienes un borrador con el contenido de todos los apartados en <a href="https://github.com/melvinfranco99/panel-monitorizacion-equipos/blob/main/memoria/BORRADOR_MEMORIA.md"><code>memoria/BORRADOR_MEMORIA.md</code></a>, y en la <a href="tfg.html#memoria">Guía del proyecto</a> verás cuántas páginas dedicar a cada uno. <strong>Reescríbelo con tus palabras</strong>: tienes que poder defender cada frase.</p>
+
+  <h3>Reglas de redacción que se evalúan</h3>
+  <div class="rejilla">
+    <div class="caja"><h3>Estilo</h3><p>Impersonal o primera persona, pero siempre la misma. Frases cortas. Términos técnicos bien usados (ICMP, latencia, disponibilidad, CSRF).</p></div>
+    <div class="caja"><h3>Objetivos</h3><p>En infinitivo, pocos y medibles: <em>«Detectar la caída de un equipo en menos de un minuto»</em>, no <em>«Hacer una app buena»</em>.</p></div>
+    <div class="caja"><h3>Citas</h3><p>APA 7 en el texto: <em>(Postel, 1981)</em>, con su entrada en la bibliografía. Nada copiado sin citar.</p></div>
+    <div class="caja"><h3>Figuras</h3><p>Numeradas y con leyenda («Figura 3. Vista de incidencias. Fuente: elaboración propia») y <strong>citadas en el texto</strong>.</p></div>
+  </div>
+
+  <!-- ===================================================== -->
+  <h2 id="f7"><span class="fase">Fase 7</span> El seguimiento del tutor (25 %)</h2>
+  <p>Un cuarto de la nota es <strong>constancia</strong>. Entrega todo lo que te pida en su fecha, ve a las tutorías colectivas semanales y, aunque no te lo pida, manda un avance breve cada dos semanas:</p>
+<pre>Asunto: Proyecto Intermodular – avance [fecha]
+
+Hola [tutor/a]:
+Le resumo el avance de estas dos semanas:
+- Hecho: [v3 y v4: web con Flask y monitor en segundo plano con estados].
+- Problema y solución: [el ping bloqueaba la web → lo pasé a un hilo].
+- Próximo paso: [historial y cálculo de disponibilidad].
+- Duda: [¿la tabla comparativa de herramientas va en Introducción o en Desarrollo?]
+Repositorio: https://github.com/melvinfranco99/panel-monitorizacion-equipos
+Un saludo, [nombre]</pre>
+
+  <!-- ===================================================== -->
+  <h2 id="f8"><span class="fase">Fase 8</span> Presentación y defensa</h2>
+  <p>Solo defiendes si apruebas la memoria. Son 20 minutos como máximo, con un PPT o similar, y luego 10 minutos de preguntas. Se evalúa la expresión verbal y no verbal, el contenido, que respetes las pautas y tus respuestas.</p>
+  <ol class="pasos">
+    <li>Haz unas 14 diapositivas siguiendo el <a href="defensa.html">guion de la defensa</a>: problema → objetivos → solución → cómo funciona → pruebas → conclusiones → <strong>aportación propia</strong>.</li>
+    <li>Prepara la demo con plan B: el laboratorio en vivo; si falla, el modo demo; si falla también, el vídeo grabado.</li>
+    <li>Ensaya con cronómetro al menos 3 veces. Grábate para quitar muletillas.</li>
+    <li>Repasa las <a href="defensa.html">40+ preguntas</a> respondiendo en voz alta, sin leer.</li>
+    <li>El día de la defensa: DNI, portátil cargado, la presentación en un USB y en la nube, y el vídeo de respaldo.</li>
+  </ol>
+
+  <!-- ===================================================== -->
+  <h2 id="final">Checklist por fases</h2>
+  <p>Se guarda en tu navegador. Marca cada punto cuando lo hayas hecho.</p>
+  <ul class="check-lista">
+    <li><input type="checkbox"> <strong>F0</strong> · He leído la guía y he comunicado la modalidad al tutor antes del 20/11.</li>
+    <li><input type="checkbox"> <strong>F1</strong> · La app funciona en mi equipo y los tests pasan.</li>
+    <li><input type="checkbox"> <strong>F2</strong> · Sé explicar el ciclo del monitor, la regla de los 2 fallos y la fórmula de la disponibilidad sin mirar.</li>
+    <li><input type="checkbox"> <strong>F3</strong> · He hecho las versiones v0–v7 (o al menos v0–v4) con un commit cada una.</li>
+    <li><input type="checkbox"> <strong>F3</strong> · He añadido una mejora propia.</li>
+    <li><input type="checkbox"> <strong>F4</strong> · Llevo el diario y tengo una ficha por cada decisión importante.</li>
+    <li><input type="checkbox"> <strong>F4</strong> · Tengo 8–10 fuentes en APA.</li>
+    <li><input type="checkbox"> <strong>F5</strong> · He medido H1–H4 en el laboratorio y tengo capturas y vídeo.</li>
+    <li><input type="checkbox"> <strong>F6</strong> · La memoria está en la plantilla oficial, con 15–20 páginas y los 10 apartados.</li>
+    <li><input type="checkbox"> <strong>F6</strong> · Las figuras y tablas tienen leyenda, el índice está actualizado y la he exportado a PDF.</li>
+    <li><input type="checkbox"> <strong>F7</strong> · He enviado avances periódicos y he ido a las tutorías.</li>
+    <li><input type="checkbox"> <strong>F8</strong> · Tengo las diapositivas, he ensayado 3 veces en menos de 20 minutos y tengo el plan B.</li>
+  </ul>
+  </div>
+</main>
+<footer class="pie">NetPanel · Proyecto Intermodular</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
